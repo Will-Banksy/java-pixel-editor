@@ -195,6 +195,8 @@ public class MenuButton extends ButtonsBase
 			e.printStackTrace();
 		}
 		
+		addActionListener(action);
+		
 		setPreferredSize(new Dimension(50, 50));
 		
 		String tooltip = "<html><b>" + buttonName + "</b> (" + shortcutDescriptor + ")\n" + description;

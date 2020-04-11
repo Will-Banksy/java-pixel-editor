@@ -33,20 +33,13 @@ public class Canvas extends Panel
 {
 	public class DrawingSurface
 	{
-//		public class GrabbedPixel
-//		{
-//			int colour;
-//			boolean grabbed;
-//		}
-		
 		public int gridWidth = 32;
 		public int gridHeight = 32;
 		
 		//public int[][] prevGridColours; // Original plan to improve performance: Only redraw pixels that have changed
 		public int[][] gridColours;
 		public int[][] gridOverlay;
-//		public boolean[][] gridSelected;
-		public MyMap<Point, Boolean> gridSelection;
+		public MyMap<Point, Boolean> gridSelection; // TODO: Turn this into something other than a map, probably, as I really don't need it's map capabilities and I don't use the Boolean at all
 		
 		public Canvas canvas;
 		
@@ -55,18 +48,6 @@ public class Canvas extends Panel
 			this.canvas = canvas;
 			
 			setGridDims(gridWidth, gridHeight);
-			
-			/*gridColours = new int[gridWidth][gridHeight];
-			gridOverlay = new int[gridWidth][gridHeight];
-			
-			for(int i = 0; i < gridWidth; i++)
-			{
-				for(int j = 0; j < gridHeight; j++)
-				{
-					gridColours[i][j] = Colour.TRANSPARENT;
-					gridOverlay[i][j] = Colour.TRANSPARENT;
-				}
-			}*/
 		}
 		
 		public void setGridDims(int width, int height)
@@ -75,17 +56,6 @@ public class Canvas extends Panel
 			gridHeight = height;
 			gridColours = new int[gridWidth][gridHeight];
 			gridOverlay = new int[gridWidth][gridHeight];
-//			gridSelected = new boolean[gridWidth][gridHeight];
-			
-			for(int i = 0; i < gridWidth; i++)
-			{
-				for(int j = 0; j < gridHeight; j++)
-				{
-					gridColours[i][j] = Colour.TRANSPARENT;
-					gridOverlay[i][j] = Colour.TRANSPARENT;
-//					gridSelected[i][j] = false;
-				}
-			}
 			
 			gridSelection = new MyMap<Point, Boolean>();
 		}
@@ -142,28 +112,6 @@ public class Canvas extends Panel
 		
 		public void updateSelection(int offX, int offY)
 		{
-//			boolean[][] temp = new boolean[gridWidth][gridHeight];
-//			
-//			for(int i = 0; i < gridWidth; i++)
-//			{
-//				for(int j = 0; j < gridHeight; j++)
-//				{
-//					int newI = i - offX;
-//					int newJ = j - offY;
-//					
-//					if(newI >= 0 && newI < getGridDims().width && newJ >= 0 && newJ < getGridDims().height)
-//					{
-//						temp[i][j] = gridSelected[newI][newJ];
-//					}
-//					else
-//					{
-//						temp[i][j] = false;
-//					}
-//				}
-//			}
-//			
-//			Helper.copyMatrix(temp, gridSelected);
-			
 			for(MyMapEntry<Point, Boolean> entry : gridSelection.getEntries())
 			{
 				Point p = entry.getKey();
@@ -408,12 +356,13 @@ public class Canvas extends Panel
 	boolean isDraggingSelection = false;
 	boolean isMovingSelectionContent = false;
 	public Integer[][] grabbedPixels = null;
-	public MyMap<Point, Integer> grabbedPixelsMap = new MyMap<Point, Integer>(); // HashMaps were not working like I expected, so I just made my own Map thing. Without extending/implementing Map or anything of course
+	public MyMap<Point, Integer> grabbedPixelsMap = new MyMap<Point, Integer>(); // TODO: Delete the MyMap class and rename/remove MyMapEntry too - Use some other map implementation. Hashmaps are fast, but I had problems with them apparently
+	// HashMaps were not working like I expected, so I just made my own Map thing. Without extending/implementing Map or anything of course
 	/*
-	 * Grab pixels - put in hashmap (Point corresponding to position, Integer to colour). Point.equals checks whether the x and y variables are equal, so shouldn't have any nasty behaviour
-	 * Move pixels (while dragging) - move pixels in hashmap
-	 * Move pixels (stopped dragging) - move pixels in hashmap
-	 * Set pixels - get all pixels from hashmap and put them where their Point specifies
+	 * Grab pixels - put in map (Point corresponding to position, Integer to colour). Point.equals checks whether the x and y variables are equal, so shouldn't have any nasty behaviour
+	 * Move pixels (while dragging) - move pixels in map
+	 * Move pixels (stopped dragging) - move pixels in map
+	 * Set pixels - get all pixels from map and put them where their Point specifies
 	 */
 	
 	// Need this for drawing pixel-perfect lines (Point = position of pixel, Integer = previousColour of pixel)
@@ -436,7 +385,8 @@ public class Canvas extends Panel
 	 * -- NOTES FOR FUTURE --
 	 * 
 	 * - Adjustable 'Mirrors' : https://github.com/Orama-Interactive/Pixelorama/issues/133
-	 * - Make selection persist through to using other tools - make other tools only work in selected region - If doing this would probably have to implement marching ants as a way of showing the selection instead of my current solution
+	 * - Make selection persist through to using other tools - make other tools only work in selected region - If doing this would probably have to implement marching ants as a way of showing the selection instead of my current method
+	 * - Spline/Bezier tool - Like in GraphicsGale
 	 */
 	
 	public Canvas()
@@ -645,6 +595,7 @@ public class Canvas extends Panel
 			}
 		});
 		
+		// Implement shortcuts for deleting the pixels under the current selection
 		Action deleteSelection = new AbstractAction() {
 			@Override public void actionPerformed(ActionEvent e)
 			{
@@ -749,12 +700,16 @@ public class Canvas extends Panel
 	// Performance is currently fine
 	@Override public void paintComponent(Graphics g)
 	{
+		// TODO: Fix - When zoomed in very far into a larger image, pixels stop being drawn, if your view is far enough away from the top-left corner of the canvas
+		
 		// NOTE: DO NOT use VolatileImage, had some periods of extreme slowness when doing that
 		
 		BufferedImage bfi = new BufferedImage(surface.gridWidth, surface.gridHeight, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage navImg = new BufferedImage(surface.gridWidth, surface.gridHeight, BufferedImage.TYPE_INT_ARGB);
 		bfi.setAccelerationPriority(1); // Make it of the utmost importance to use all available resources to 'accelerate' this image (see javadoc for method for details)
 		
 		int[] imgData = ((DataBufferInt)bfi.getRaster().getDataBuffer()).getData();
+		int[] navImgData = ((DataBufferInt)navImg.getRaster().getDataBuffer()).getData();
 		
 		// int index = x + y * width; // The equation for getting the 1D index from a 2D array
 		
@@ -772,11 +727,11 @@ public class Canvas extends Panel
 		
 		ArrayList<MyMapEntry<Point, Integer>> grabbedList = grabbedPixelsMap != null ? grabbedPixelsMap.getEntries() : new ArrayList<MyMapEntry<Point, Integer>>();
 		
+		// Just doing this to avoid doing multiple loops, which would most likely be slightly slower and more code
 		int loopTo = (int)Helper.getMax(surface.gridSelection.getEntries().size(), lassoPath.size(), pathClose.size(), selectPreview.size(), grabbedList.size());
-		
 		for(int i = 0; i < loopTo; i++)
 		{
-			// Just doing this to avoid doing two loops, which would most likely be slightly slower and more code
+			// Add all points from the relevant ArrayLists to the relevant 2d arrays/matrices
 			if(i < lassoPath.size())
 			{
 				int x = lassoPath.get(i).x;
@@ -849,6 +804,9 @@ public class Canvas extends Panel
 						int index = i + j * surface.gridWidth; // Get index in the data array
 
 						imgData[index] = surface.gridColours[posX][posY];
+						
+						// Set pixel in navImg - what we're going to be giving the navigator to draw
+						navImgData[index] = imgData[index];
 					}
 					if(Colour.getAlpha(surface.gridOverlay[posX][posY]) != 0)
 					{
@@ -913,6 +871,7 @@ public class Canvas extends Panel
 		{
 			// Set the grid and repaint the navigator
 			NavigatorPanel.navigator.setGrid(surface.gridWidth, surface.gridHeight, surface.gridColours);
+			NavigatorPanel.navigator.img = navImg;
 			NavigatorPanel.navigator.repaint();
 		}
 		

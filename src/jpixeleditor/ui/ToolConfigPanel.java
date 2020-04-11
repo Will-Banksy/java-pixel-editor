@@ -41,8 +41,11 @@ public class ToolConfigPanel extends Panel
 		// For: paintbrush
 		public boolean pixelPerfect = false;
 		
-		// For: rectangular selection
+		// For: all selection tools
 		public boolean selectionAppend = false;
+		
+		// For dither
+		public boolean interdisperse = true;
 		
 		public ToolSettings()
 		{
@@ -150,7 +153,8 @@ public class ToolConfigPanel extends Panel
 							selectFreePanel(),
 							selectMagicPanel(),
 							selectColourPanel(),
-							movePanel() };
+							movePanel(),
+							ditherPanel() };
 		
 		return panels;
 	}
@@ -567,7 +571,6 @@ public class ToolConfigPanel extends Panel
 	private Panel selectColourPanel()
 	{
 		Panel panel = new Panel(Theme.THEME_BACK_LIGHT);
-		panel.setBorder(new EmptyBorder(new Insets(4, 5, 4, 5)));
 		
 		ButtonsBase selectionAppend = new ButtonsBase("Right Click Action: Remove") {
 			@Override public void paintComponent(Graphics g)
@@ -629,6 +632,29 @@ public class ToolConfigPanel extends Panel
 		panel.setBorder(new EmptyBorder(new Insets(4, 0, 4, 0)));
 		
 		panel.add(new JLabel("<html><strong color='white'>" + EditorTools.TOOL_MOVE.name + "</strong></html>"));
+		
+		return panel;
+	}
+	
+	private Panel ditherPanel()
+	{
+		Panel panel = new Panel(Theme.THEME_BACK_LIGHT);
+		panel.setBorder(new EmptyBorder(new Insets(4, 0, 4, 0)));
+		
+		panel.add(new JLabel("<html><strong color='white'>" + EditorTools.TOOL_DITHER.name + "</strong></html>"));
+		
+		CheckBox interdisperse = new CheckBox("Interdisperse Secondary Colour", true); // true because we want it to initially be selected
+		interdisperse.setForeground(Color.WHITE);
+		
+		interdisperse.addActionListener(new ActionListener() {
+			@Override public void actionPerformed(ActionEvent ae)
+			{
+				CheckBox box = (CheckBox)ae.getSource();
+				EditorTools.getByID(EditorTools.ToolInfo.ID_DITHER).settings.interdisperse = box.isSelected();
+			}
+		});
+		
+		panel.add(interdisperse);
 		
 		return panel;
 	}

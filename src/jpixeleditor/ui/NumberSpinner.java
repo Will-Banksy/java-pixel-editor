@@ -10,6 +10,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -21,6 +22,18 @@ import javax.swing.ImageIcon;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.UndoableEditListener;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.Element;
+import javax.swing.text.PlainDocument;
+import javax.swing.text.Position;
+import javax.swing.text.Segment;
 
 import jpixeleditor.main.Main;
 import jpixeleditor.tools.Colour;
@@ -94,6 +107,7 @@ public class NumberSpinner extends Panel
 		GridBagConstraints c = new GridBagConstraints();
 		
 		field = new NumberTextField(0, this);
+		c.insets = new Insets(5, 5, 5, 5);
 		c.gridheight = 2;
 		c.fill = GridBagConstraints.BOTH;
 		add(field, c);
@@ -116,11 +130,12 @@ public class NumberSpinner extends Panel
 		return value;
 	}
 	
-	public void setValue(int newValue, int oldValue)
+	public void setValue(int newValue, int oldValue, boolean setText)
 	{
 		value = bounds.toBounds(newValue, oldValue);
 		iLi.integerChanged(value, oldValue);
-		field.setText(String.valueOf(value));
+		if(setText)
+			field.setText(String.valueOf(value));
 		field.repaint();
 	}
 	
@@ -150,7 +165,7 @@ class NumberTextField extends JTextField
 		
 		oldString = String.valueOf(initialValue);
 		
-		addActionListener(new ActionListener() {
+		Action updateAction = new AbstractAction() {
 			@Override public void actionPerformed(ActionEvent evt)
 			{
 				try
@@ -161,7 +176,7 @@ class NumberTextField extends JTextField
 					
 					String newString = String.valueOf(boundedValue);
 					
-					base.setValue(boundedValue, oldValue);
+					base.setValue(boundedValue, oldValue, true);
 					
 					oldString = newString;
 				}
@@ -170,11 +185,135 @@ class NumberTextField extends JTextField
 					setText((String)oldString);
 				}
 			}
-		});
+		};
+		
+		addActionListener(updateAction);
+		
+//		abstract class DocumentChangeListener implements DocumentListener
+//		{
+//			@Override public void insertUpdate(DocumentEvent e)
+//			{
+//				change(e);
+//			}
+//
+//			@Override public void removeUpdate(DocumentEvent e)
+//			{
+//				change(e);
+//			}
+//
+//			@Override public void changedUpdate(DocumentEvent e)
+//			{
+//				change(e);
+//			}
+//			
+//			abstract void change(DocumentEvent e);
+//		}
+//		
+//		getDocument().addDocumentListener(new DocumentChangeListener() {
+//			@Override void change(DocumentEvent e)
+//			{
+//				e.getDocument();
+//			}
+//		});
+		
+		// This updates the tolerance every time you enter something into the text field
+		// It works fine but in order for it to work, it has to constrain the value every time you enter something, which could potentially be annoying
+		Document doc = getDocument();
+		if(doc instanceof AbstractDocument)
+		{
+			/* AbstractDocument a */doc = (AbstractDocument)doc;
+			((AbstractDocument) doc).setDocumentFilter(new DocumentFilter() {
+				@Override public void insertString(FilterBypass fb, int offs, String str, AttributeSet a)
+				{
+					try
+					{
+						String text = "";
+						try
+						{
+							text = getDocument().getText(0, getDocument().getLength());
+						}
+						catch(BadLocationException e)
+						{
+							e.printStackTrace();
+						}
+						
+						StringBuilder sb = new StringBuilder(text);
+						sb.insert(offs, str);
+						text = sb.toString();
+						
+						int newValue = Integer.parseInt(text);
+						int oldValue = Integer.parseInt(oldString);
+						
+						int boundedValue = base.bounds.toBounds(newValue, Integer.parseInt(oldString));
+						base.setValue(boundedValue, oldValue, false);
+						
+//						System.out.println("INSERT: oldString = " + oldString + "  newString = " + boundedValue);
+						
+						oldString = String.valueOf(boundedValue);
+						
+						try
+						{
+							super.replace(fb, 0, getDocument().getLength(), oldString, a);
+						}
+						catch (BadLocationException e)
+						{
+							e.printStackTrace();
+						}
+					}
+					catch(NumberFormatException nfe)
+					{
+						Toolkit.getDefaultToolkit().beep();
+					}
+				}
+				
+				@Override public void replace(FilterBypass fb, int offs, int length, String str, AttributeSet a)
+				{
+					try
+					{
+						String text = "";
+						try
+						{
+							text = getDocument().getText(0, getDocument().getLength());
+						}
+						catch(BadLocationException e)
+						{
+							e.printStackTrace();
+						}
+						
+						StringBuilder sb = new StringBuilder(text);
+						sb.replace(offs, offs + length, str);
+						text = sb.toString();
+						
+						int newValue = Integer.parseInt(text);
+						int oldValue = Integer.parseInt(oldString);
+						
+						int boundedValue = base.bounds.toBounds(newValue, Integer.parseInt(oldString));
+						base.setValue(boundedValue, oldValue, false);
+						
+//						System.out.println("REPLACE: oldString = " + oldString + "  newString = " + boundedValue);
+
+						oldString = String.valueOf(boundedValue);
+						
+						try
+						{
+							super.replace(fb, 0, getDocument().getLength(), oldString, a);
+						}
+						catch (BadLocationException e)
+						{
+							e.printStackTrace();
+						}
+					}
+					catch(NumberFormatException nfe)
+					{
+						Toolkit.getDefaultToolkit().beep();
+					}
+				}
+			});
+		}
 		
 		setBackground(Colour.toAWTColor(Main.Theme.THEME_BACK_LIGHT));
 		setForeground(Color.WHITE);
-		setBorder(new EmptyBorder(new Insets(5, 5, 5, 5)));
+		setBorder(new EmptyBorder(new Insets(0, 0, 0, 0)));
 	}
 }
 
@@ -210,7 +349,7 @@ class NumberChangeButton extends ButtonsBase
 			action = new AbstractAction() {
 				@Override public void actionPerformed(ActionEvent e)
 				{
-					base.setValue(base.getValue() + 1, base.getValue());
+					base.setValue(base.getValue() + 1, base.getValue(), true);
 				}
 			};
 		}
@@ -219,7 +358,7 @@ class NumberChangeButton extends ButtonsBase
 			action = new AbstractAction() {
 				@Override public void actionPerformed(ActionEvent e)
 				{
-					base.setValue(base.getValue() - 1, base.getValue());
+					base.setValue(base.getValue() - 1, base.getValue(), true);
 				}
 			};
 		}

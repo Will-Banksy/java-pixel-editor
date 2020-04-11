@@ -483,11 +483,11 @@ public class EditorTools
 					
 					if(SwingUtilities.isLeftMouseButton(me))
 					{
-						PaintHandler.drawLine_Dither(prevOnGrid, currOnGrid, col1, col2, EditorTools.brushSize, EditorTools.selectedTool.settings);
+						PaintHandler.drawLine_Dither(prevOnGrid, currOnGrid, col1, col2, false, EditorTools.brushSize, EditorTools.selectedTool.settings);
 					}
 					else if(SwingUtilities.isRightMouseButton(me))
 					{
-						PaintHandler.drawLine_Dither(prevOnGrid, currOnGrid, col2, col1, EditorTools.brushSize, EditorTools.selectedTool.settings);
+						PaintHandler.drawLine_Dither(prevOnGrid, currOnGrid, col1, col2, true, EditorTools.brushSize, EditorTools.selectedTool.settings);
 					}
 				}
 				break;

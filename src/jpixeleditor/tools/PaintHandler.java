@@ -618,7 +618,8 @@ public class PaintHandler
 		}
 	}
 	
-	public static void drawLine_Dither(Point start, Point end, int col1, int col2, int brushSize, ToolSettings settings)
+	// If interdisperse, then it only uses the primary colour, and which mouse button you press determines where the colour ends up
+	public static void drawLine_Dither(Point start, Point end, int col1, int col2, boolean rightClick, int brushSize, ToolSettings settings)
 	{
 		DrawingSurface surface = CanvasContainer.canvas.surface;
 		Point[] points = Helper.plotLine(start, end, false);
@@ -629,14 +630,29 @@ public class PaintHandler
 			{
 				if(surface.contains(points[i].x, points[i].y))
 				{
-					// This determines whether to put col1 or col2
-					if((points[i].x + points[i].y) % 2 == 0)
+					if(rightClick)
 					{
-						surface.gridColours[points[i].x][points[i].y] = col1;
+						// This determines whether to put col1 or col2
+						if((points[i].x + points[i].y) % 2 == 0 && settings.interdisperse)
+						{
+							surface.gridColours[points[i].x][points[i].y] = col2;
+						}
+						else if((points[i].x + points[i].y) % 2 != 0)
+						{
+							surface.gridColours[points[i].x][points[i].y] = col1;
+						}
 					}
 					else
 					{
-						surface.gridColours[points[i].x][points[i].y] = col2;
+						// This determines whether to put col1 or col2
+						if((points[i].x + points[i].y) % 2 == 0)
+						{
+							surface.gridColours[points[i].x][points[i].y] = col1;
+						}
+						else if(settings.interdisperse)
+						{
+							surface.gridColours[points[i].x][points[i].y] = col2;
+						}
 					}
 				}
 			}
@@ -659,14 +675,29 @@ public class PaintHandler
 						// Check where you are trying to paint is within the bounds
 						if(surface.contains(x, y))
 						{
-							// This determines whether to put col1 or col2
-							if((x + y) % 2 == 0)
+							if(rightClick)
 							{
-								surface.gridColours[x][y] = col1;
+								// This determines whether to put col1 or col2
+								if((x + y) % 2 == 0 && settings.interdisperse)
+								{
+									surface.gridColours[x][y] = col2;
+								}
+								else if((x + y) % 2 != 0)
+								{
+									surface.gridColours[x][y] = col1;
+								}
 							}
 							else
 							{
-								surface.gridColours[x][y] = col2;
+								// This determines whether to put col1 or col2
+								if((x + y) % 2 == 0)
+								{
+									surface.gridColours[x][y] = col1;
+								}
+								else if(settings.interdisperse)
+								{
+									surface.gridColours[x][y] = col2;
+								}
 							}
 						}
 					}

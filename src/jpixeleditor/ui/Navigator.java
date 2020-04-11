@@ -8,6 +8,8 @@ import java.awt.Rectangle;
 import java.awt.TexturePaint;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -23,6 +25,7 @@ public class Navigator extends Panel
 	public int gridWidth = 32, gridHeight = 32;
 	public int gridColours[][];
 	private TexturePaint tp = null;
+	BufferedImage img;
 	
 	public Rectangle view;
 	
@@ -111,6 +114,8 @@ public class Navigator extends Panel
 						origin.y = view.y + offset.y;
 					}
 					
+					// TODO: Make this more accurate, if possible. Is not accurate on larger images
+					
 					// We need to scale the point (0, 0) down with the view rectangle, because then (0, 0) will be the offset we need for the Canvas
 					
 					// Get the 0, which is between the view position and the view position plus it's dimension, and 0 and the dimension of the CanvasContainer dimension
@@ -149,7 +154,7 @@ public class Navigator extends Panel
 		});
 	}
 	
-	public void updateViewRect()
+	public void updateViewRect() // TODO: Make this more accurate, if possible. Is not accurate on larger images
 	{
 		Rectangle canvas = CanvasContainer.canvas.getBounds();
 		Dimension canvasContainer = Main.canvasPanel.getSize();
@@ -250,32 +255,18 @@ public class Navigator extends Panel
 		super.setBounds(x, y, width, height);
 	}
 	
-	@Override public void paintComponent(Graphics g)
+	@Override public void paintComponent(Graphics g) // TODO: Needs to be made quicker/more efficient the same way Canvas was
 	{
 		Graphics2D g2d = (Graphics2D)g;
 		
 		g2d.setPaint(tp);
 		g2d.fillRect(0, 0, getWidth(), getHeight());
 		
-		for(int i = 0; i < gridWidth; i++)
-		{
-			for(int j = 0; j < gridHeight; j++)
-			{
-				Point p = gridToCanvas(i, j); // Get the top-left corner of the rectangle
-				Point toP = gridToCanvas(i + 1, j + 1); // To ensure no gaps between pixels, the width and height are set to the distance between this coordinate and the next
-				int width = toP.x - p.x;
-				int height = toP.y - p.y;
-				
-				if(width != 0 && height != 0) // width and height should always be greater than 0, but it doesn't hurt to include this to optimize for if they aren't
-				{
-					if(Colour.getAlpha(gridColours[i][j]) != 0) // That sped up performance a lot more than I thought it would
-					{
-						g2d.setColor(Colour.toAWTColor(gridColours[i][j]));
-						g2d.fillRect(p.x, p.y, width, height);
-					}
-				}
-			}
-		}
+		float scale = (float)getWidth() / (float)CanvasContainer.canvas.surface.gridWidth;
+		g2d.scale(scale, scale);
+		g2d.drawImage(img, 0, 0, null);
+		
+		g2d.setTransform(new AffineTransform());
 		
 		if(updateViewRect)
 			updateViewRect();

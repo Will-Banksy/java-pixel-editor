@@ -247,7 +247,7 @@ class DropShadowBorder implements Border {
 
     }
 
-    public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+    @Override public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
 
         /*
          * Because of the amount of time it can take to render the drop shadow,

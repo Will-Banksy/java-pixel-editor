@@ -493,21 +493,7 @@ public class SelectionHandler
 				 * 
 				 * This is my algorithm for lasso selection, it's based on a few assumptions we can safely make, along with a bit of good old fashioned process by elimination
 				 * 
-				 * Now, what we're going to do is this:
-								
-								// Another thing - If we've just done a successful flood fill test, that means that the flood fill reached
-				 * Loop through every row, keeping track of how many selected pixels we encounter
-				 * If that number is zero or 1, or any amount but all together, move on to the next row
-				 * If that number is 2 distinct ones, if previously there were none, do nothing, if previously there were 2, do a flood fill test after the first - If negative, do one after the second - if positive, fill in the pixels. // Then move 2 down
-				 * If that number is 3 distinct ones, if previously there were none, do nothing, if previously there were 2, do a flood fill test after the first - If negative, do one after the second - if positive, fill in the pixels. // Then move 2 down
-				 * In general:
-				 * Take number of distinct groups of selected pixels to be N, and the previous N to be PN
-				 * If N is 0 or 1, move on
-				 * If PN is zero, move on
-				 * (Foreach group, if the group doesn't have any pixels above it or below it, connected to it, don't flood fill after that group)
-				 * Else, do a flood fill test after every group, starting at the first and going until the last - 1. After the PNth successful one move on
-				 * 
-				 * After Performance Testing: Haha my algorithm is faster than piskels (At least on the Adorable SCP 173 Image, but Piskel is significantly faster at displaying it, so we're even. No we're not I have Pixel Perfect XD)
+				 * After Performance Testing: Haha my algorithm is faster than piskels, I think
 				 */
 				
 				
