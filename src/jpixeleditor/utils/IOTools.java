@@ -1,4 +1,4 @@
-package jpixeleditor.tools;
+package jpixeleditor.utils;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -9,9 +9,9 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
 import jpixeleditor.main.Main;
-import jpixeleditor.tools.PaintHandler.DrawTo;
 import jpixeleditor.ui.CanvasContainer;
 import jpixeleditor.ui.Canvas.DrawingSurface;
+import jpixeleditor.utils.PaintHandler.DrawTo;
 
 public class IOTools
 {

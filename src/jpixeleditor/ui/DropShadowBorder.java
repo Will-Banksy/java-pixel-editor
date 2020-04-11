@@ -24,7 +24,7 @@ import javax.swing.border.Border;
 import com.jhlabs.image.GaussianFilter;
 
 import jpixeleditor.main.Main;
-import jpixeleditor.tools.Colour;
+import jpixeleditor.utils.Colour;
 
 class DropShadowBorder implements Border {
 

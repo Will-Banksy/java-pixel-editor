@@ -1,4 +1,4 @@
-package jpixeleditor.tools;
+package jpixeleditor.utils;
 
 import java.awt.Point;
 import java.awt.Rectangle;

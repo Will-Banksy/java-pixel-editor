@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
-import jpixeleditor.tools.Colour;
+import jpixeleditor.utils.Colour;
 
 @SuppressWarnings("serial")
 public class Panel extends JPanel

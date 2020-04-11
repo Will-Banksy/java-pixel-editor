@@ -16,9 +16,9 @@ import javax.swing.Action;
 import javax.swing.JColorChooser;
 
 import jpixeleditor.main.Main;
-import jpixeleditor.tools.Colour;
-import jpixeleditor.tools.EditorTools;
 import jpixeleditor.ui.ToolTipsHandler.TooltipLocation;
+import jpixeleditor.utils.Colour;
+import jpixeleditor.utils.EditorTools;
 
 @SuppressWarnings("serial")
 public class ColourSelectorButton extends ButtonsBase

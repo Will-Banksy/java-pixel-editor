@@ -19,8 +19,8 @@ import javax.swing.JLayeredPane;
 import javax.swing.KeyStroke;
 
 import jpixeleditor.main.Main;
-import jpixeleditor.tools.EditorTools;
 import jpixeleditor.ui.ToolTipsHandler.TooltipLocation;
+import jpixeleditor.utils.EditorTools;
 
 @SuppressWarnings("serial")
 public class ColourSelectorPanel extends Panel

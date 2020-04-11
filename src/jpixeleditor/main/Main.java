@@ -9,13 +9,13 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import jpixeleditor.tools.Colour;
 import jpixeleditor.ui.CanvasContainer;
 import jpixeleditor.ui.MenuBar;
 import jpixeleditor.ui.NavigatorPanel;
 import jpixeleditor.ui.Panel;
 import jpixeleditor.ui.ToolConfigPanel;
 import jpixeleditor.ui.Toolbar;
+import jpixeleditor.utils.Colour;
 
 public class Main
 {

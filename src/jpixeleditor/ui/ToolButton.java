@@ -11,127 +11,128 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
 import jpixeleditor.main.Main;
-import jpixeleditor.tools.EditorTools;
+import jpixeleditor.tools.Tool;
 import jpixeleditor.ui.ToolTipsHandler.TooltipLocation;
+import jpixeleditor.utils.EditorTools;
 
 @SuppressWarnings("serial")
 public class ToolButton extends ButtonsBase
 {
-	EditorTools.ToolInfo tool;
+	Tool tool;
 	BufferedImage icon = null;
 	
-	public ToolButton(EditorTools.ToolInfo tool)
+	public ToolButton(Tool tool)
 	{
 		this.tool = tool;
 	}
 	
 	public void initialise(Action selectThisAction)
 	{
-		String filename = null;
-		String toolName = "";
-		String description = "";
-		String toolKey = "";
+		String filename = tool.iconPath;
+		String toolName = tool.name;
+		String description = tool.description;
+		String toolKey = tool.keyShortcut;
 		
-		switch(tool.id)
-		{
-			case EditorTools.ToolInfo.ID_PENCIL:
-				filename = "/Pencil.png";
-				toolName = EditorTools.TOOL_PENCIL.name;
-				description = "Draws pixels";
-				toolKey = "P";
-				break;
-			
-			case EditorTools.ToolInfo.ID_ERASER:
-				filename = "/Eraser.png";
-				toolName = EditorTools.TOOL_ERASER.name;
-				description = "Erases pixels";
-				toolKey = "E";
-				break;
-			
-			case EditorTools.ToolInfo.ID_BUCKET:
-				filename = "/Bucket.png";
-				toolName = EditorTools.TOOL_BUCKET.name;
-				description = "Fills in an area with a colour";
-				toolKey = "B";
-				break;
-			
-			case EditorTools.ToolInfo.ID_REPLACE:
-				filename = "/Replace.png";
-				toolName = EditorTools.TOOL_REPLACE.name;
-				description = "Replaces all pixels of one colour with another";
-				toolKey = "A";
-				break;
-			
-			case EditorTools.ToolInfo.ID_LINE:
-				filename = "/Line.png";
-				toolName = EditorTools.TOOL_LINE.name;
-				description = "Draws lines";
-				toolKey = "L";
-				break;
-			
-			case EditorTools.ToolInfo.ID_RECTANGLE:
-				filename = "/Rectangle.png";
-				toolName = EditorTools.TOOL_RECTANGLE.name;
-				description = "Draws rectangles";
-				toolKey = "R";
-				break;
-				
-			case EditorTools.ToolInfo.ID_ELLIPSE:
-				filename = "/Ellipse.png";
-				toolName = EditorTools.TOOL_ELLIPSE.name;
-				description = "Draws Ellipses";
-				toolKey = "C";
-				break;
-				
-			case EditorTools.ToolInfo.ID_PIPETTE:
-				filename = "/Pipette.png";
-				toolName = EditorTools.TOOL_PIPETTE.name;
-				description = "Selects a colour from the canvas";
-				toolKey = "O";
-				break;
-				
-			case EditorTools.ToolInfo.ID_SELECT_RECT:
-				filename = "/Select_Rect.png";
-				toolName = EditorTools.TOOL_SELECT_RECT.name;
-				description = "Selects a rectangle\nClick to clear selection";
-				toolKey = "S";
-				break;
-				
-			case EditorTools.ToolInfo.ID_SELECT_FREE:
-				filename = "/Select_Free.png";
-				toolName = EditorTools.TOOL_SELECT_FREE.name;
-				description = "Selects a region\nClick to clear selection";
-				toolKey = "H";
-				break;
-				
-			case EditorTools.ToolInfo.ID_SELECT_MAGIC:
-				filename = "/Wand.png";
-				toolName = EditorTools.TOOL_SELECT_MAGIC.name;
-				description = "Magically selects a region\nClick to clear selection";
-				toolKey = "Z";
-				break;
-				
-			case EditorTools.ToolInfo.ID_SELECT_COLOUR:
-				filename = "/Colour_Wand.png";
-				toolName = EditorTools.TOOL_SELECT_COLOUR.name;
-				description = "Magically selects a colour\nClick to clear selection";
-				toolKey = "V";
-				break;
-				
-			case EditorTools.ToolInfo.ID_MOVE:
-				filename = "/Hand.png";
-				toolName = EditorTools.TOOL_MOVE.name;
-				description = "Moves the canvas content";
-				toolKey = "M";
-				break;
-				
-			case EditorTools.ToolInfo.ID_DITHER:
-				filename = "/Dither.png";
-				toolName = EditorTools.TOOL_DITHER.name;
-				description = "Draws the primary colour interdispersed with the secondary colour\nRight click to switch";
-				toolKey = "D";
-				break;
-		}
+//		switch(tool.info.id)
+//		{
+//			case EditorTools.ToolInfo.ID_PENCIL:
+//				filename = "/Pencil.png";
+//				toolName = EditorTools.TOOL_PENCIL.name;
+//				description = "Draws pixels";
+//				toolKey = "P";
+//				break;
+//			
+//			case EditorTools.ToolInfo.ID_ERASER:
+//				filename = "/Eraser.png";
+//				toolName = EditorTools.TOOL_ERASER.name;
+//				description = "Erases pixels";
+//				toolKey = "E";
+//				break;
+//			
+//			case EditorTools.ToolInfo.ID_BUCKET:
+//				filename = "/Bucket.png";
+//				toolName = EditorTools.TOOL_BUCKET.name;
+//				description = "Fills in an area with a colour";
+//				toolKey = "B";
+//				break;
+//			
+//			case EditorTools.ToolInfo.ID_REPLACE:
+//				filename = "/Replace.png";
+//				toolName = EditorTools.TOOL_REPLACE.name;
+//				description = "Replaces all pixels of one colour with another";
+//				toolKey = "A";
+//				break;
+//			
+//			case EditorTools.ToolInfo.ID_LINE:
+//				filename = "/Line.png";
+//				toolName = EditorTools.TOOL_LINE.name;
+//				description = "Draws lines";
+//				toolKey = "L";
+//				break;
+//			
+//			case EditorTools.ToolInfo.ID_RECTANGLE:
+//				filename = "/Rectangle.png";
+//				toolName = EditorTools.TOOL_RECTANGLE.name;
+//				description = "Draws rectangles";
+//				toolKey = "R";
+//				break;
+//				
+//			case EditorTools.ToolInfo.ID_ELLIPSE:
+//				filename = "/Ellipse.png";
+//				toolName = EditorTools.TOOL_ELLIPSE.name;
+//				description = "Draws Ellipses";
+//				toolKey = "C";
+//				break;
+//				
+//			case EditorTools.ToolInfo.ID_PIPETTE:
+//				filename = "/Pipette.png";
+//				toolName = EditorTools.TOOL_PIPETTE.name;
+//				description = "Selects a colour from the canvas";
+//				toolKey = "O";
+//				break;
+//				
+//			case EditorTools.ToolInfo.ID_SELECT_RECT:
+//				filename = "/Select_Rect.png";
+//				toolName = EditorTools.TOOL_SELECT_RECT.name;
+//				description = "Selects a rectangle\nClick to clear selection";
+//				toolKey = "S";
+//				break;
+//				
+//			case EditorTools.ToolInfo.ID_SELECT_FREE:
+//				filename = "/Select_Free.png";
+//				toolName = EditorTools.TOOL_SELECT_FREE.name;
+//				description = "Selects a region\nClick to clear selection";
+//				toolKey = "H";
+//				break;
+//				
+//			case EditorTools.ToolInfo.ID_SELECT_MAGIC:
+//				filename = "/Wand.png";
+//				toolName = EditorTools.TOOL_SELECT_MAGIC.name;
+//				description = "Magically selects a region\nClick to clear selection";
+//				toolKey = "Z";
+//				break;
+//				
+//			case EditorTools.ToolInfo.ID_SELECT_COLOUR:
+//				filename = "/Colour_Wand.png";
+//				toolName = EditorTools.TOOL_SELECT_COLOUR.name;
+//				description = "Magically selects a colour\nClick to clear selection";
+//				toolKey = "V";
+//				break;
+//				
+//			case EditorTools.ToolInfo.ID_MOVE:
+//				filename = "/Hand.png";
+//				toolName = EditorTools.TOOL_MOVE.name;
+//				description = "Moves the canvas content";
+//				toolKey = "M";
+//				break;
+//				
+//			case EditorTools.ToolInfo.ID_DITHER:
+//				filename = "/Dither.png";
+//				toolName = EditorTools.TOOL_DITHER.name;
+//				description = "Draws the primary colour interdispersed with the secondary colour\nRight click to switch";
+//				toolKey = "D";
+//				break;
+//		}
 		
 		String tooltip = "<html><b>" + toolName + "</b>" + " (" + toolKey + ")" + "\n" + description;
 		ToolTipsHandler.addTooltipTo(this, tooltip, TooltipLocation.EAST);
@@ -145,6 +146,7 @@ public class ToolButton extends ButtonsBase
 		
 		try
 		{
+			System.out.println(filename);
 			icon = ImageIO.read(Main.class.getResource(filename));
 		}
 		catch (IOException e)

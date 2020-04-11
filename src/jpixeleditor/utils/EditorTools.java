@@ -1,4 +1,4 @@
-package jpixeleditor.tools;
+package jpixeleditor.utils;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -6,12 +6,27 @@ import java.awt.event.MouseEvent;
 import javax.swing.SwingUtilities;
 
 import jpixeleditor.main.Main;
-import jpixeleditor.tools.PaintHandler.DrawTo;
+import jpixeleditor.tools.Bucket;
+import jpixeleditor.tools.ColourSelection;
+import jpixeleditor.tools.Dither;
+import jpixeleditor.tools.Ellipse;
+import jpixeleditor.tools.Eraser;
+import jpixeleditor.tools.FreeSelection;
+import jpixeleditor.tools.Line;
+import jpixeleditor.tools.Move;
+import jpixeleditor.tools.Pencil;
+import jpixeleditor.tools.Pipette;
+import jpixeleditor.tools.Rectangle;
+import jpixeleditor.tools.RectangularSelection;
+import jpixeleditor.tools.Replace;
+import jpixeleditor.tools.ShapeSelection;
+import jpixeleditor.tools.Tool;
 import jpixeleditor.ui.Canvas;
 import jpixeleditor.ui.CanvasContainer;
 import jpixeleditor.ui.ColourSelectorPanel;
 import jpixeleditor.ui.Canvas.DrawingSurface;
 import jpixeleditor.ui.ToolConfigPanel.ToolSettings;
+import jpixeleditor.utils.PaintHandler.DrawTo;
 
 public class EditorTools
 {
@@ -85,8 +100,23 @@ public class EditorTools
 	public static final ToolInfo TOOL_MOVE = new ToolInfo(ToolInfo.ID_MOVE, "Move", ToolInfo.ON_RELEASE, false, false);
 	public static final ToolInfo TOOL_DITHER = new ToolInfo(ToolInfo.ID_DITHER, "Dither", ToolInfo.ON_HOLD, true, false);
 	
+	public static final Tool[] tools = new Tool[] { new Pencil(0),
+													new Eraser(1),
+													new Bucket(2),
+													new Replace(3),
+													new Line(4),
+													new Rectangle(5),
+													new Ellipse(6),
+													new Pipette(7),
+													new RectangularSelection(8),
+													new FreeSelection(9),
+													new ShapeSelection(10),
+													new ColourSelection(11),
+													new Move(12),
+													new Dither(13) };
+	
 	// Defaults
-	public static ToolInfo selectedTool = TOOL_PENCIL;
+	public static Tool selectedTool = tools[0];
 	public static int primaryColour = Colour.BLACK;
 	public static int secondaryColour = Colour.TRANSPARENT;
 	
@@ -94,11 +124,11 @@ public class EditorTools
 	
 	public static void switchTool(int toolID)
 	{
-		selectedTool = getByID(toolID);
+		selectedTool = tools[toolID];
 		Main.configPanel.switchPanel(toolID);
 	}
 	
-	public static ToolInfo getByID(int id)
+	/*public static ToolInfo getByID(int id)
 	{
 		switch(id)
 		{
@@ -148,7 +178,7 @@ public class EditorTools
 				throw new IllegalArgumentException("'id' is not a value that corresponds to a tool id");
 		}
 	}
-	
+	/*
 	public static void doToolAction_Press(Point pos, MouseEvent me)
 	{
 		switch(selectedTool.id)
@@ -434,7 +464,7 @@ public class EditorTools
 						
 						if(getByID(ToolInfo.ID_PENCIL).settings.pixelPerfect)
 						{
-							PaintHandler.drawLine_PixelPerfect(prevOnGrid, currOnGrid, col, DrawTo.CANVAS, brushSize, getByID(ToolInfo.ID_PENCIL).settings);
+							PaintHandler.drawLine_PixelPerfect(prevOnGrid, currOnGrid, col, DrawTo.CANVAS, brushSize, getByID(ToolInfo.ID_PENCIL).settings, CanvasContainer.canvas.currentStroke);
 						}
 						else
 						{
@@ -589,8 +619,6 @@ public class EditorTools
 						break;
 					}
 					
-					surface.clearOverlay();
-					
 					Point startOnGrid = startPos;//surface.canvasToGrid(startPos.x, startPos.y);
 					Point endOnGrid = surface.canvasToGrid(endPos.x, endPos.y);
 					
@@ -627,4 +655,5 @@ public class EditorTools
 				}
 		}
 	}
+	*/
 }

@@ -22,11 +22,12 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import jpixeleditor.main.Main;
-import jpixeleditor.tools.Colour;
-import jpixeleditor.tools.EditorTools;
-import jpixeleditor.tools.Helper;
-import jpixeleditor.tools.MyMap;
-import jpixeleditor.tools.MyMap.MyMapEntry;
+import jpixeleditor.tools.FreeSelection;
+import jpixeleditor.utils.Colour;
+import jpixeleditor.utils.EditorTools;
+import jpixeleditor.utils.Helper;
+import jpixeleditor.utils.MyMap;
+import jpixeleditor.utils.MyMap.MyMapEntry;
 
 @SuppressWarnings("serial")
 public class Canvas extends Panel
@@ -368,13 +369,6 @@ public class Canvas extends Panel
 	// Need this for drawing pixel-perfect lines (Point = position of pixel, Integer = previousColour of pixel)
 	public ArrayList<MyMapEntry<Point, Integer>> currentStroke;
 	
-	public ArrayList<Point> pathClose = new ArrayList<Point>();
-	public ArrayList<Point> lassoPath = new ArrayList<Point>();
-	/*
-	 * For Free Selection, an Important feature
-	 * Algorithm and explanation in PaintHandler
-	 */
-	
 	public ArrayList<Point> selectPreview = new ArrayList<Point>();
 	
 	public Point debugPoint = null;
@@ -387,6 +381,9 @@ public class Canvas extends Panel
 	 * - Adjustable 'Mirrors' : https://github.com/Orama-Interactive/Pixelorama/issues/133
 	 * - Make selection persist through to using other tools - make other tools only work in selected region - If doing this would probably have to implement marching ants as a way of showing the selection instead of my current method
 	 * - Spline/Bezier tool - Like in GraphicsGale
+	 * - Ellipse - Add option to draw from centre
+	 * 
+	 * -- FIXME : Fix everything
 	 */
 	
 	public Canvas()
@@ -483,22 +480,23 @@ public class Canvas extends Panel
 					}
 				}
 				
-				if(EditorTools.selectedTool.triggerType == EditorTools.ToolInfo.ON_PRESS)
-				{
-					EditorTools.doToolAction_Press(me.getPoint(), me);
-				}
-				else if(EditorTools.selectedTool.triggerType == EditorTools.ToolInfo.ON_HOLD)
-				{
-					currentStroke = new ArrayList<MyMapEntry<Point, Integer>>();
-					if(mls_prevPoint != null)
-						EditorTools.doToolAction_Hold(me.getPoint(), mls_prevPoint, me);
-					mls_prevPoint = surface.canvasToGrid(me.getPoint().x, me.getPoint().y);
-				}
-				else if(EditorTools.selectedTool.triggerType == EditorTools.ToolInfo.ON_RELEASE)
-				{
-					mls_startPoint = surface.canvasToGrid(me.getPoint().x, me.getPoint().y);
-					EditorTools.updatePreview_Release(mls_startPoint, me.getPoint(), me);
-				}
+//				if(EditorTools.selectedTool.info.triggerType == EditorTools.ToolInfo.ON_PRESS)
+//				{
+//					EditorTools.doToolAction_Press(me.getPoint(), me);
+//				}
+//				else if(EditorTools.selectedTool.info.triggerType == EditorTools.ToolInfo.ON_HOLD)
+//				{
+//					currentStroke = new ArrayList<MyMapEntry<Point, Integer>>();
+//					if(mls_prevPoint != null)
+//						EditorTools.doToolAction_Hold(me.getPoint(), mls_prevPoint, me);
+//					mls_prevPoint = surface.canvasToGrid(me.getPoint().x, me.getPoint().y);
+//				}
+//				else if(EditorTools.selectedTool.info.triggerType == EditorTools.ToolInfo.ON_RELEASE)
+//				{
+//					mls_startPoint = surface.canvasToGrid(me.getPoint().x, me.getPoint().y);
+//					EditorTools.updatePreview_Release(mls_startPoint, me.getPoint(), me);
+//				}
+				EditorTools.selectedTool.onMousePressed(me);
 				
 				drawMouse = false;
 				repaint();
@@ -535,19 +533,20 @@ public class Canvas extends Panel
 					return;
 				}
 				
-				if(EditorTools.selectedTool.triggerType == EditorTools.ToolInfo.ON_HOLD)
-				{
-					if(mls_prevPoint != null)
-						EditorTools.doToolAction_Hold(me.getPoint(), mls_prevPoint/*surface.gridToCanvas(mls_prevPoint.x, mls_prevPoint.y)*/, me);
-				}
-				else if(EditorTools.selectedTool.triggerType == EditorTools.ToolInfo.ON_RELEASE)
-				{
-					if(mls_startPoint != null)
-						EditorTools.doToolAction_Release(mls_startPoint, me.getPoint(), me);
-				}
-				mls_prevPoint = null;
-				mls_startPoint = null;
-				if(currentStroke != null) currentStroke.clear(); // Clear it, because that is always better than setting it to null. Setting things to null is probably very bad practice
+//				if(EditorTools.selectedTool.info.triggerType == EditorTools.ToolInfo.ON_HOLD)
+//				{
+//					if(mls_prevPoint != null)
+//						EditorTools.doToolAction_Hold(me.getPoint(), mls_prevPoint/*surface.gridToCanvas(mls_prevPoint.x, mls_prevPoint.y)*/, me);
+//				}
+//				else if(EditorTools.selectedTool.info.triggerType == EditorTools.ToolInfo.ON_RELEASE)
+//				{
+//					if(mls_startPoint != null)
+//						EditorTools.doToolAction_Release(mls_startPoint, me.getPoint(), me);
+//				}
+//				mls_prevPoint = null;
+//				mls_startPoint = null;
+//				if(currentStroke != null) currentStroke.clear(); // Clear it, because that is always better than setting it to null. Setting things to null is probably very bad practice
+				EditorTools.selectedTool.onMouseReleased(me);
 				
 				drawMouse = true;
 				repaint();
@@ -574,19 +573,22 @@ public class Canvas extends Panel
 					return;
 				}
 				
-				if(EditorTools.selectedTool.triggerType == EditorTools.ToolInfo.ON_HOLD)
-				{
-					if(mls_prevPoint != null)
-						EditorTools.doToolAction_Hold(me.getPoint(), mls_prevPoint, me);
-					mls_prevPoint = surface.canvasToGrid(me.getPoint().x, me.getPoint().y);
-					repaint();
-				}
-				else if(EditorTools.selectedTool.triggerType == EditorTools.ToolInfo.ON_RELEASE)
-				{
-					if(mls_startPoint != null)
-						EditorTools.updatePreview_Release(mls_startPoint, me.getPoint(), me);
-					repaint();
-				}
+//				if(EditorTools.selectedTool.info.triggerType == EditorTools.ToolInfo.ON_HOLD)
+//				{
+//					if(mls_prevPoint != null)
+//						EditorTools.doToolAction_Hold(me.getPoint(), mls_prevPoint, me);
+//					mls_prevPoint = surface.canvasToGrid(me.getPoint().x, me.getPoint().y);
+//					repaint();
+//				}
+//				else if(EditorTools.selectedTool.info.triggerType == EditorTools.ToolInfo.ON_RELEASE)
+//				{
+//					if(mls_startPoint != null)
+//						EditorTools.updatePreview_Release(mls_startPoint, me.getPoint(), me);
+//					repaint();
+//				}
+				EditorTools.selectedTool.onMouseDragged(me);
+				
+				repaint();
 			}
 
 			@Override public void mouseMoved(MouseEvent me)
@@ -726,6 +728,9 @@ public class Canvas extends Panel
 		boolean[][] grabbed = new boolean[surface.gridWidth][surface.gridHeight];
 		
 		ArrayList<MyMapEntry<Point, Integer>> grabbedList = grabbedPixelsMap != null ? grabbedPixelsMap.getEntries() : new ArrayList<MyMapEntry<Point, Integer>>();
+		
+		ArrayList<Point> lassoPath = FreeSelection.lassoPath;
+		ArrayList<Point> pathClose = FreeSelection.pathClose;
 		
 		// Just doing this to avoid doing multiple loops, which would most likely be slightly slower and more code
 		int loopTo = (int)Helper.getMax(surface.gridSelection.getEntries().size(), lassoPath.size(), pathClose.size(), selectPreview.size(), grabbedList.size());

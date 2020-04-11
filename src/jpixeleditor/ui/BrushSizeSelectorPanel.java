@@ -10,9 +10,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import jpixeleditor.main.Main;
-import jpixeleditor.tools.Colour;
-import jpixeleditor.tools.EditorTools;
 import jpixeleditor.ui.ToolTipsHandler.TooltipLocation;
+import jpixeleditor.utils.Colour;
+import jpixeleditor.utils.EditorTools;
 
 @SuppressWarnings("serial")
 public class BrushSizeSelectorPanel extends Panel

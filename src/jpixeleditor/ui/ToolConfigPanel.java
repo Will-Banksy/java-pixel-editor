@@ -13,10 +13,10 @@ import javax.swing.JLabel;
 import javax.swing.border.EmptyBorder;
 
 import jpixeleditor.main.Main.Theme;
-import jpixeleditor.tools.EditorTools;
-import jpixeleditor.tools.EditorTools.ToolInfo;
 import jpixeleditor.ui.NumberSpinner.IntegerChangeListener;
 import jpixeleditor.ui.NumberSpinner.NumberBounds;
+import jpixeleditor.utils.EditorTools;
+import jpixeleditor.utils.EditorTools.ToolInfo;
 
 @SuppressWarnings("serial")
 public class ToolConfigPanel extends Panel
@@ -171,7 +171,7 @@ public class ToolConfigPanel extends Panel
 			@Override public void actionPerformed(ActionEvent arg0)
 			{
 				CheckBox box = (CheckBox)arg0.getSource();
-				EditorTools.getByID(EditorTools.ToolInfo.ID_PENCIL).settings.circleBrush = box.isSelected();
+				EditorTools.tools[EditorTools.ToolInfo.ID_PENCIL].settings.circleBrush = box.isSelected();
 			}
 		});
 		
@@ -182,7 +182,7 @@ public class ToolConfigPanel extends Panel
 			@Override public void actionPerformed(ActionEvent arg0)
 			{
 				CheckBox box = (CheckBox)arg0.getSource();
-				EditorTools.getByID(EditorTools.ToolInfo.ID_PENCIL).settings.pixelPerfect = box.isSelected();
+				EditorTools.tools[EditorTools.ToolInfo.ID_PENCIL].settings.pixelPerfect = box.isSelected();
 			}
 		});
 		
@@ -209,7 +209,7 @@ public class ToolConfigPanel extends Panel
 			@Override public void actionPerformed(ActionEvent arg0)
 			{
 				CheckBox box = (CheckBox)arg0.getSource();
-				EditorTools.getByID(EditorTools.ToolInfo.ID_ERASER).settings.circleBrush = box.isSelected();
+				EditorTools.tools[EditorTools.ToolInfo.ID_ERASER].settings.circleBrush = box.isSelected();
 			}
 		});
 		
@@ -229,11 +229,11 @@ public class ToolConfigPanel extends Panel
 		IntegerChangeListener iLi = new IntegerChangeListener() {
 			@Override public void integerChanged(int newInt, int oldInt)
 			{
-				EditorTools.getByID(EditorTools.ToolInfo.ID_BUCKET).settings.tolerance = newInt;
+				EditorTools.tools[EditorTools.ToolInfo.ID_BUCKET].settings.tolerance = newInt;
 			}
 		};
 		NumberBounds bounds = new NumberBounds(0, 255, NumberBounds.BoundType.CONSTRAIN);
-		NumberSpinner tolerance = new NumberSpinner(iLi, EditorTools.getByID(EditorTools.ToolInfo.ID_BUCKET).settings.tolerance, bounds);
+		NumberSpinner tolerance = new NumberSpinner(iLi, EditorTools.tools[EditorTools.ToolInfo.ID_BUCKET].settings.tolerance, bounds);
 		
 		CheckBox fill8Way = new CheckBox("8-Way Fill");
 		fill8Way.setForeground(Color.WHITE);
@@ -242,7 +242,7 @@ public class ToolConfigPanel extends Panel
 			@Override public void actionPerformed(ActionEvent arg0)
 			{
 				CheckBox box = (CheckBox)arg0.getSource();
-				EditorTools.getByID(EditorTools.ToolInfo.ID_BUCKET).settings.fill8Way = box.isSelected();
+				EditorTools.tools[EditorTools.ToolInfo.ID_BUCKET].settings.fill8Way = box.isSelected();
 			}
 		});
 		
@@ -265,11 +265,11 @@ public class ToolConfigPanel extends Panel
 		IntegerChangeListener iLi = new IntegerChangeListener() {
 			@Override public void integerChanged(int newInt, int oldInt)
 			{
-				EditorTools.getByID(EditorTools.ToolInfo.ID_REPLACE).settings.tolerance = newInt;
+				EditorTools.tools[EditorTools.ToolInfo.ID_REPLACE].settings.tolerance = newInt;
 			}
 		};
 		NumberBounds bounds = new NumberBounds(0, 255, NumberBounds.BoundType.CONSTRAIN);
-		NumberSpinner tolerance = new NumberSpinner(iLi, EditorTools.getByID(EditorTools.ToolInfo.ID_REPLACE).settings.tolerance, bounds);
+		NumberSpinner tolerance = new NumberSpinner(iLi, EditorTools.tools[EditorTools.ToolInfo.ID_REPLACE].settings.tolerance, bounds);
 		
 		panel.setLayout(new FlowLayout());
 		
@@ -293,7 +293,7 @@ public class ToolConfigPanel extends Panel
 			@Override public void actionPerformed(ActionEvent arg0)
 			{
 				CheckBox box = (CheckBox)arg0.getSource();
-				EditorTools.getByID(EditorTools.ToolInfo.ID_LINE).settings.circleBrush = box.isSelected();
+				EditorTools.tools[EditorTools.ToolInfo.ID_LINE].settings.circleBrush = box.isSelected();
 			}
 		});
 		
@@ -304,7 +304,7 @@ public class ToolConfigPanel extends Panel
 			@Override public void actionPerformed(ActionEvent arg0)
 			{
 				CheckBox box = (CheckBox)arg0.getSource();
-				EditorTools.getByID(EditorTools.ToolInfo.ID_LINE).settings.oneToOneRatio = box.isSelected();
+				EditorTools.tools[EditorTools.ToolInfo.ID_LINE].settings.oneToOneRatio = box.isSelected();
 			}
 		});
 		
@@ -330,7 +330,7 @@ public class ToolConfigPanel extends Panel
 			@Override public void actionPerformed(ActionEvent arg0)
 			{
 				CheckBox box = (CheckBox)arg0.getSource();
-				EditorTools.getByID(EditorTools.ToolInfo.ID_RECTANGLE).settings.oneToOneRatio = box.isSelected();
+				EditorTools.tools[EditorTools.ToolInfo.ID_RECTANGLE].settings.oneToOneRatio = box.isSelected();
 			}
 		});
 		
@@ -341,7 +341,7 @@ public class ToolConfigPanel extends Panel
 			@Override public void actionPerformed(ActionEvent arg0)
 			{
 				CheckBox box = (CheckBox)arg0.getSource();
-				EditorTools.getByID(EditorTools.ToolInfo.ID_RECTANGLE).settings.fill = box.isSelected();
+				EditorTools.tools[EditorTools.ToolInfo.ID_RECTANGLE].settings.fill = box.isSelected();
 			}
 		});
 		
@@ -367,7 +367,7 @@ public class ToolConfigPanel extends Panel
 			@Override public void actionPerformed(ActionEvent arg0)
 			{
 				CheckBox box = (CheckBox)arg0.getSource();
-				EditorTools.getByID(EditorTools.ToolInfo.ID_ELLIPSE).settings.oneToOneRatio = box.isSelected();
+				EditorTools.tools[EditorTools.ToolInfo.ID_ELLIPSE].settings.oneToOneRatio = box.isSelected();
 			}
 		});
 		
@@ -378,7 +378,7 @@ public class ToolConfigPanel extends Panel
 			@Override public void actionPerformed(ActionEvent arg0)
 			{
 				CheckBox box = (CheckBox)arg0.getSource();
-				EditorTools.getByID(EditorTools.ToolInfo.ID_ELLIPSE).settings.fill = box.isSelected();
+				EditorTools.tools[EditorTools.ToolInfo.ID_ELLIPSE].settings.fill = box.isSelected();
 			}
 		});
 		
@@ -431,12 +431,12 @@ public class ToolConfigPanel extends Panel
 				if(selectionAppend.getText().equals("Right Click Action: Remove"))
 				{
 					selectionAppend.setText("Right Click Action: Append");
-					EditorTools.getByID(EditorTools.ToolInfo.ID_SELECT_RECT).settings.selectionAppend = true;
+					EditorTools.tools[EditorTools.ToolInfo.ID_SELECT_RECT].settings.selectionAppend = true;
 				}
 				else
 				{
 					selectionAppend.setText("Right Click Action: Remove");
-					EditorTools.getByID(EditorTools.ToolInfo.ID_SELECT_RECT).settings.selectionAppend = false;
+					EditorTools.tools[EditorTools.ToolInfo.ID_SELECT_RECT].settings.selectionAppend = false;
 				}
 			}
 		});
@@ -477,12 +477,12 @@ public class ToolConfigPanel extends Panel
 				if(selectionAppend.getText().equals("Right Click Action: Remove"))
 				{
 					selectionAppend.setText("Right Click Action: Append");
-					EditorTools.getByID(EditorTools.ToolInfo.ID_SELECT_FREE).settings.selectionAppend = true;
+					EditorTools.tools[EditorTools.ToolInfo.ID_SELECT_FREE].settings.selectionAppend = true;
 				}
 				else
 				{
 					selectionAppend.setText("Right Click Action: Remove");
-					EditorTools.getByID(EditorTools.ToolInfo.ID_SELECT_FREE).settings.selectionAppend = false;
+					EditorTools.tools[EditorTools.ToolInfo.ID_SELECT_FREE].settings.selectionAppend = false;
 				}
 			}
 		});
@@ -524,12 +524,12 @@ public class ToolConfigPanel extends Panel
 				if(selectionAppend.getText().equals("Right Click Action: Remove"))
 				{
 					selectionAppend.setText("Right Click Action: Append");
-					EditorTools.getByID(EditorTools.ToolInfo.ID_SELECT_MAGIC).settings.selectionAppend = true;
+					EditorTools.tools[EditorTools.ToolInfo.ID_SELECT_MAGIC].settings.selectionAppend = true;
 				}
 				else
 				{
 					selectionAppend.setText("Right Click Action: Remove");
-					EditorTools.getByID(EditorTools.ToolInfo.ID_SELECT_MAGIC).settings.selectionAppend = false;
+					EditorTools.tools[EditorTools.ToolInfo.ID_SELECT_MAGIC].settings.selectionAppend = false;
 				}
 			}
 		});
@@ -537,11 +537,11 @@ public class ToolConfigPanel extends Panel
 		IntegerChangeListener iLi = new IntegerChangeListener() {
 			@Override public void integerChanged(int newInt, int oldInt)
 			{
-				EditorTools.getByID(EditorTools.ToolInfo.ID_SELECT_MAGIC).settings.tolerance = newInt;
+				EditorTools.tools[EditorTools.ToolInfo.ID_SELECT_MAGIC].settings.tolerance = newInt;
 			}
 		};
 		NumberBounds bounds = new NumberBounds(0, 255, NumberBounds.BoundType.CONSTRAIN);
-		NumberSpinner tolerance = new NumberSpinner(iLi, EditorTools.getByID(EditorTools.ToolInfo.ID_SELECT_MAGIC).settings.tolerance, bounds);
+		NumberSpinner tolerance = new NumberSpinner(iLi, EditorTools.tools[EditorTools.ToolInfo.ID_SELECT_MAGIC].settings.tolerance, bounds);
 		
 		CheckBox fill8Way = new CheckBox("8-Way Fill");
 		fill8Way.setForeground(Color.WHITE);
@@ -550,7 +550,7 @@ public class ToolConfigPanel extends Panel
 			@Override public void actionPerformed(ActionEvent arg0)
 			{
 				CheckBox box = (CheckBox)arg0.getSource();
-				EditorTools.getByID(EditorTools.ToolInfo.ID_SELECT_MAGIC).settings.fill8Way = box.isSelected();
+				EditorTools.tools[EditorTools.ToolInfo.ID_SELECT_MAGIC].settings.fill8Way = box.isSelected();
 			}
 		});
 		
@@ -596,12 +596,12 @@ public class ToolConfigPanel extends Panel
 				if(selectionAppend.getText().equals("Right Click Action: Remove"))
 				{
 					selectionAppend.setText("Right Click Action: Append");
-					EditorTools.getByID(EditorTools.ToolInfo.ID_SELECT_COLOUR).settings.selectionAppend = true;
+					EditorTools.tools[EditorTools.ToolInfo.ID_SELECT_COLOUR].settings.selectionAppend = true;
 				}
 				else
 				{
 					selectionAppend.setText("Right Click Action: Remove");
-					EditorTools.getByID(EditorTools.ToolInfo.ID_SELECT_COLOUR).settings.selectionAppend = false;
+					EditorTools.tools[EditorTools.ToolInfo.ID_SELECT_COLOUR].settings.selectionAppend = false;
 				}
 			}
 		});
@@ -610,11 +610,11 @@ public class ToolConfigPanel extends Panel
 		IntegerChangeListener iLi = new IntegerChangeListener() {
 			@Override public void integerChanged(int newInt, int oldInt)
 			{
-				EditorTools.getByID(EditorTools.ToolInfo.ID_SELECT_COLOUR).settings.tolerance = newInt;
+				EditorTools.tools[EditorTools.ToolInfo.ID_SELECT_COLOUR].settings.tolerance = newInt;
 			}
 		};
 		NumberBounds bounds = new NumberBounds(0, 255, NumberBounds.BoundType.CONSTRAIN);
-		NumberSpinner tolerance = new NumberSpinner(iLi, EditorTools.getByID(EditorTools.ToolInfo.ID_SELECT_COLOUR).settings.tolerance, bounds);
+		NumberSpinner tolerance = new NumberSpinner(iLi, EditorTools.tools[EditorTools.ToolInfo.ID_SELECT_COLOUR].settings.tolerance, bounds);
 		
 		panel.add(label);
 		
@@ -650,7 +650,7 @@ public class ToolConfigPanel extends Panel
 			@Override public void actionPerformed(ActionEvent ae)
 			{
 				CheckBox box = (CheckBox)ae.getSource();
-				EditorTools.getByID(EditorTools.ToolInfo.ID_DITHER).settings.interdisperse = box.isSelected();
+				EditorTools.tools[EditorTools.ToolInfo.ID_DITHER].settings.interdisperse = box.isSelected();
 			}
 		});
 		

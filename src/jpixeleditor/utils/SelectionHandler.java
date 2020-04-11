@@ -1,4 +1,4 @@
-package jpixeleditor.tools;
+package jpixeleditor.utils;
 
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -7,13 +7,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 
-import jpixeleditor.tools.Helper.Group;
-import jpixeleditor.tools.MyMap.MyMapEntry;
-import jpixeleditor.tools.PaintHandler.Queue;
+import jpixeleditor.tools.FreeSelection;
 import jpixeleditor.ui.Canvas;
 import jpixeleditor.ui.CanvasContainer;
 import jpixeleditor.ui.Canvas.DrawingSurface;
 import jpixeleditor.ui.ToolConfigPanel.ToolSettings;
+import jpixeleditor.utils.Helper.Group;
+import jpixeleditor.utils.MyMap.MyMapEntry;
+import jpixeleditor.utils.PaintHandler.Queue;
 
 public class SelectionHandler
 {
@@ -334,9 +335,9 @@ public class SelectionHandler
 			// All your standard local variables as references to global variables creation, with your classic null checks
 			DrawingSurface surface = CanvasContainer.canvas.surface;
 			
-			ArrayList<Point> path = CanvasContainer.canvas.lassoPath;
+			ArrayList<Point> path = FreeSelection.lassoPath;
 			
-			ArrayList<Point> pathClose = CanvasContainer.canvas.pathClose;
+			ArrayList<Point> pathClose = FreeSelection.pathClose;
 			
 			// We will need the previous selection if we are right clicking, which we don't want to clear the previous selection
 	//		@SuppressWarnings("unchecked")

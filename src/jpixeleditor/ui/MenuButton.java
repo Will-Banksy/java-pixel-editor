@@ -17,9 +17,9 @@ import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import jpixeleditor.main.Main;
-import jpixeleditor.tools.Helper;
-import jpixeleditor.tools.IOTools;
 import jpixeleditor.ui.ToolTipsHandler.TooltipLocation;
+import jpixeleditor.utils.Helper;
+import jpixeleditor.utils.IOTools;
 
 @SuppressWarnings("serial")
 public class MenuButton extends ButtonsBase

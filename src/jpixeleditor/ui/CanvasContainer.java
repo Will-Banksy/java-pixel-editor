@@ -8,9 +8,9 @@ import java.awt.event.MouseWheelListener;
 
 import javax.swing.SwingUtilities;
 
-import jpixeleditor.tools.EditorTools;
-import jpixeleditor.tools.Helper;
 import jpixeleditor.ui.Canvas.Zoom;
+import jpixeleditor.utils.EditorTools;
+import jpixeleditor.utils.Helper;
 
 @SuppressWarnings("serial")
 public class CanvasContainer extends Panel

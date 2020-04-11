@@ -37,10 +37,10 @@ import javax.swing.text.DocumentFilter;
 import com.jhlabs.image.GaussianFilter;
 
 import jpixeleditor.main.Main;
-import jpixeleditor.tools.Colour;
-import jpixeleditor.tools.EditorTools;
-import jpixeleditor.tools.Helper;
 import jpixeleditor.ui.ColourSelectorPopupPanel.ColourDescriptor;
+import jpixeleditor.utils.Colour;
+import jpixeleditor.utils.EditorTools;
+import jpixeleditor.utils.Helper;
 
 @SuppressWarnings("serial")
 public class ColourSelectorPopupPanel extends Panel

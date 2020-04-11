@@ -9,8 +9,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Dictionary;
-import java.util.Map;
 import java.util.WeakHashMap;
 
 import javax.swing.JComponent;
@@ -20,8 +18,8 @@ import javax.swing.border.EmptyBorder;
 
 import jpixeleditor.main.Main;
 import jpixeleditor.main.Main.Theme;
-import jpixeleditor.tools.Colour;
-import jpixeleditor.tools.Helper;
+import jpixeleditor.utils.Colour;
+import jpixeleditor.utils.Helper;
 
 public class ToolTipsHandler
 {
