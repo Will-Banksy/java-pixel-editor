@@ -1,4 +1,4 @@
-package jpixeleditor.main;
+package jpixeleditor;
 
 import java.awt.BorderLayout;
 import java.awt.Container;

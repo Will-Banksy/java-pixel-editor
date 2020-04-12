@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JLabel;
 import javax.swing.border.EmptyBorder;
 
-import jpixeleditor.main.Main.Theme;
+import jpixeleditor.Main.Theme;
 import jpixeleditor.ui.NumberSpinner.IntegerChangeListener;
 import jpixeleditor.ui.NumberSpinner.NumberBounds;
 import jpixeleditor.utils.EditorTools;

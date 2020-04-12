@@ -18,7 +18,7 @@ import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 import javax.swing.KeyStroke;
 
-import jpixeleditor.main.Main;
+import jpixeleditor.Main;
 import jpixeleditor.ui.ToolTipsHandler.TooltipLocation;
 import jpixeleditor.utils.EditorTools;
 

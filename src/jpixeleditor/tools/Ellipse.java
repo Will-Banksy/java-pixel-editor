@@ -33,7 +33,7 @@ public class Ellipse extends Tool
 		
 		int col = getColour();
 		
-		PaintHandler.drawEllipse(prev, curr, col, DrawTo.OVERLAY, EditorTools.brushSize, settings);
+		PaintHandler.drawEllipse(start, curr, col, DrawTo.OVERLAY, EditorTools.brushSize, settings);
 	}
 	
 	@Override public void onMouseReleased(MouseEvent me)
@@ -42,6 +42,6 @@ public class Ellipse extends Tool
 		
 		int col = getColour();
 		
-		PaintHandler.drawEllipse(prev, curr, col, DrawTo.CANVAS, EditorTools.brushSize, settings);
+		PaintHandler.drawEllipse(start, curr, col, DrawTo.CANVAS, EditorTools.brushSize, settings);
 	}
 }

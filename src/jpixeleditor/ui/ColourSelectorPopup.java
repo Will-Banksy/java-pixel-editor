@@ -11,7 +11,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
 
-import jpixeleditor.main.Main;
+import jpixeleditor.Main;
 import jpixeleditor.utils.Colour;
 import jpixeleditor.utils.EditorTools;
 

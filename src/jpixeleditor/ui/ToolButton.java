@@ -10,7 +10,7 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
-import jpixeleditor.main.Main;
+import jpixeleditor.Main;
 import jpixeleditor.tools.Tool;
 import jpixeleditor.ui.ToolTipsHandler.TooltipLocation;
 import jpixeleditor.utils.EditorTools;

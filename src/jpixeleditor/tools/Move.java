@@ -10,6 +10,8 @@ import jpixeleditor.utils.Colour;
 
 public class Move extends Tool
 {
+	public static Point canvasContentOffset = null;// If null, not using Move tool to move canvas content
+	
 	public Move(int id)
 	{
 		super(id);
@@ -52,13 +54,13 @@ public class Move extends Tool
 		}
 		surface.gridColours = temp;
 		
-		canvas.canvasContentOffset = null;
+		canvasContentOffset = null;
 	}
 	
 	@Override public void onMouseDragged(MouseEvent me)
 	{
 		super.onMouseDragged(me);
 		
-		CanvasContainer.canvas.canvasContentOffset = new Point(curr.x - start.x, curr.y - start.y);
+		canvasContentOffset = new Point(curr.x - start.x, curr.y - start.y);
 	}
 }

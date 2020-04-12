@@ -14,8 +14,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import jpixeleditor.main.Main;
-import jpixeleditor.main.Main.Theme;
+import jpixeleditor.Main;
+import jpixeleditor.Main.Theme;
 import jpixeleditor.utils.Colour;
 import jpixeleditor.utils.Helper;
 

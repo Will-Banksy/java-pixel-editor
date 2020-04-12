@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import jpixeleditor.utils.SelectionHandler;
 
-public class FreeSelection extends Tool
+public class FreeSelection extends SelectorTool
 {
 	public static ArrayList<Point> lassoPath = new ArrayList<Point>();
 	public static ArrayList<Point> pathClose = new ArrayList<Point>();
@@ -25,6 +25,9 @@ public class FreeSelection extends Tool
 	{
 		super.onMousePressed(me);
 		
+		if(!shouldDoToolAction)
+			return;
+		
 		SelectionHandler.drawFreeSelection(start, curr, false, true, settings);
 	}
 	
@@ -32,12 +35,18 @@ public class FreeSelection extends Tool
 	{
 		super.onMouseDragged(me);
 		
+		if(!shouldDoToolAction)
+			return;
+		
 		SelectionHandler.drawFreeSelection(start, curr, false, true, settings);
 	}
 	
 	@Override public void onMouseReleased(MouseEvent me)
 	{
 		super.onMouseReleased(me);
+		
+		if(!shouldDoToolAction)
+			return;
 		
 		boolean rightClick = false;
 		
@@ -55,5 +64,10 @@ public class FreeSelection extends Tool
 		}
 		
 		SelectionHandler.drawFreeSelection(start, curr, rightClick, false, settings);
+	}
+
+	@Override public boolean triggersOnClick()
+	{
+		return false;
 	}
 }

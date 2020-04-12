@@ -26,7 +26,8 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
-import jpixeleditor.main.Main;
+
+import jpixeleditor.Main;
 import jpixeleditor.utils.Colour;
 
 @SuppressWarnings("serial")

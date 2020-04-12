@@ -5,7 +5,7 @@ import java.awt.event.MouseEvent;
 import jpixeleditor.utils.EditorTools;
 import jpixeleditor.utils.SelectionHandler;
 
-public class ShapeSelection extends Tool
+public class ShapeSelection extends SelectorTool
 {
 	public ShapeSelection(int id)
 	{
@@ -21,6 +21,9 @@ public class ShapeSelection extends Tool
 	{
 		super.onMouseClicked(me);
 		
+		if(!shouldDoToolAction)
+			return;
+		
 		if(currMouseButton == MouseButton.LEFT)
 		{
 			SelectionHandler.magicSelect(curr.x, curr.y, false, EditorTools.selectedTool.settings);
@@ -29,5 +32,10 @@ public class ShapeSelection extends Tool
 		{
 			SelectionHandler.magicSelect(curr.x, curr.y, true, EditorTools.selectedTool.settings);
 		}
+	}
+
+	@Override public boolean triggersOnClick()
+	{
+		return true;
 	}
 }

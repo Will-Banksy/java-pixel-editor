@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 
 import jpixeleditor.tools.FreeSelection;
+import jpixeleditor.tools.SelectorTool;
 import jpixeleditor.ui.Canvas;
 import jpixeleditor.ui.CanvasContainer;
 import jpixeleditor.ui.Canvas.DrawingSurface;
@@ -20,8 +21,6 @@ public class SelectionHandler
 {
 	public static void magicSelect(int x, int y, boolean rightClick, ToolSettings settings)
 	{
-		// This algorithm is significantly faster than the previous one
-		
 		Canvas.DrawingSurface surface = CanvasContainer.canvas.surface;
 
 		// Get tolerance from settings
@@ -39,7 +38,7 @@ public class SelectionHandler
 		// Need to keep track of what pixels have been coloured/filled
 		boolean[][] filled = new boolean[numX][numY];
 		
-		MyMap<Point, Boolean> newSelection = new MyMap<Point, Boolean>();
+		ArrayList<Point> newSelection = new ArrayList<Point>();
 
 		Queue q = new Queue();
 
@@ -51,7 +50,7 @@ public class SelectionHandler
 			Point p = q.pop();
 
 			// surface.gridColours[p.x][p.y] = colour;
-			newSelection.getEntries().add(new MyMapEntry<Point, Boolean>(new Point(p.x, p.y), true));
+			newSelection.add(new Point(p.x, p.y));
 			
 			// And then check each pixel immediately to every side of the current one
 			// When adding to the queue, make sure you fill that pixel as filled to avoid unnecessary iteration
@@ -107,48 +106,40 @@ public class SelectionHandler
 				{
 					// If we are set to selection append, we add the new selection
 					// Use a LinkedHasSet because it disallows duplicates and it's contains method is apparently O(1) instead of ArrayLists' O(n) which is amazing (https://stackoverflow.com/questions/17547360/create-an-arraylist-of-unique-values)
-					LinkedHashSet<MyMapEntry<Point, Boolean>> set = new LinkedHashSet<MyMapEntry<Point, Boolean>>(surface.gridSelection.getEntries());
+					LinkedHashSet<Point> set = new LinkedHashSet<Point>(SelectorTool.selection);
 					
 					// Add all entries in newSelection to the current selection
-					set.addAll(newSelection.getEntries());
+					set.addAll(newSelection);
 					
-					@SuppressWarnings("unchecked")
-					MyMapEntry<Point, Boolean>[] entriesArr = set.toArray((MyMapEntry<Point, Boolean>[])Array.newInstance(MyMapEntry.class, set.size()));
-					ArrayList<MyMapEntry<Point, Boolean>> entries = new ArrayList<MyMapEntry<Point, Boolean>>();
-					
-					// Also could use Arrays.asList combined with ArrayList.addAll but this apparently could be faster and uses less memory
-					for(MyMapEntry<Point, Boolean> entry : entriesArr)
-					{
-						entries.add(entry);
-					}
-					
-					surface.gridSelection.setEntries(entries);
+					SelectorTool.selection.clear();
+					SelectorTool.selection.addAll(set);
 				}
 				else
 				{
 					// If we are not set to selection append, we remove the new selection
 					// Use a LinkedHasSet because it disallows duplicates and it's contains method is apparently O(1) instead of ArrayLists' O(n) which is amazing (https://stackoverflow.com/questions/17547360/create-an-arraylist-of-unique-values)
-					LinkedHashSet<MyMapEntry<Point, Boolean>> set = new LinkedHashSet<MyMapEntry<Point, Boolean>>(newSelection.getEntries());
+					LinkedHashSet<Point> set = new LinkedHashSet<Point>(newSelection);
 					
 					// Instead of removing elements, we'll just create an ArrayList and add the ones that aren't in the set to it
-					ArrayList<MyMapEntry<Point, Boolean>> entries = surface.gridSelection.getEntries();
-					ArrayList<MyMapEntry<Point, Boolean>> newEntries = new ArrayList<MyMapEntry<Point, Boolean>>();
-					for(int i = 0; i < entries.size(); i++)
+					ArrayList<Point> newEntries = new ArrayList<Point>();
+					for(int i = 0; i < SelectorTool.selection.size(); i++)
 					{
 						// Taking advantage of the O(1)
-						if(!set.contains(entries.get(i)))
+						if(!set.contains(SelectorTool.selection.get(i)))
 						{
-							newEntries.add(entries.get(i));
+							newEntries.add(SelectorTool.selection.get(i));
 						}
 					}
 					
-					surface.gridSelection.setEntries(newEntries);
+					SelectorTool.selection.clear();
+					SelectorTool.selection.addAll(newEntries);
 				}
 			}
 			else
 			{
 				// Now just make the newSelection the new gridSelection, if we are just doing a normal left click
-				surface.gridSelection = newSelection;
+				SelectorTool.selection.clear();
+				SelectorTool.selection.addAll(newSelection);
 			}
 		}
 	}
@@ -182,7 +173,7 @@ public class SelectionHandler
 		
 		int targetCol = surface.gridColours[point.x][point.y];
 		
-		MyMap<Point, Boolean> newSelection = new MyMap<Point, Boolean>();
+		ArrayList<Point> newSelection = new ArrayList<Point>();
 		
 		for(int i = 0; i < surface.getGridDims().width; i++)
 		{
@@ -190,7 +181,7 @@ public class SelectionHandler
 			{
 				if(canFill(targetCol, surface.gridColours[i][j], settings.tolerance) || (Colour.getAlpha(surface.gridColours[i][j]) == 0 && Colour.getAlpha(targetCol) == 0))
 				{
-					newSelection.getEntries().add(new MyMapEntry<Point, Boolean>(new Point(i, j), true));
+					newSelection.add(new Point(i, j));
 				}
 			}
 		}
@@ -201,65 +192,56 @@ public class SelectionHandler
 			{
 				// If we are set to selection append, we add the new selection
 				// Use a LinkedHasSet because it disallows duplicates and it's contains method is apparently O(1) instead of ArrayLists' O(n) which is amazing (https://stackoverflow.com/questions/17547360/create-an-arraylist-of-unique-values)
-				LinkedHashSet<MyMapEntry<Point, Boolean>> set = new LinkedHashSet<MyMapEntry<Point, Boolean>>(surface.gridSelection.getEntries());
+				LinkedHashSet<Point> set = new LinkedHashSet<Point>(SelectorTool.selection);
 				
 				// Add all entries in newSelection to the current selection
-				set.addAll(newSelection.getEntries());
+				set.addAll(newSelection);
 				
-				@SuppressWarnings("unchecked")
-				MyMapEntry<Point, Boolean>[] entriesArr = set.toArray((MyMapEntry<Point, Boolean>[])Array.newInstance(MyMapEntry.class, set.size()));
-				ArrayList<MyMapEntry<Point, Boolean>> entries = new ArrayList<MyMapEntry<Point, Boolean>>();
-				
-				// Also could use Arrays.asList combined with ArrayList.addAll but this apparently could be faster and uses less memory
-				for(MyMapEntry<Point, Boolean> entry : entriesArr)
-				{
-					entries.add(entry);
-				}
-				
-				surface.gridSelection.setEntries(entries);
+				SelectorTool.selection.clear();
+				SelectorTool.selection.addAll(set);
 			}
 			else
 			{
 				// If we are not set to selection append, we remove the new selection
 				// Use a LinkedHasSet because it disallows duplicates and it's contains method is apparently O(1) instead of ArrayLists' O(n) which is amazing (https://stackoverflow.com/questions/17547360/create-an-arraylist-of-unique-values)
-				LinkedHashSet<MyMapEntry<Point, Boolean>> set = new LinkedHashSet<MyMapEntry<Point, Boolean>>(newSelection.getEntries());
+				LinkedHashSet<Point> set = new LinkedHashSet<Point>(newSelection);
 				
 				// Instead of removing elements, we'll just create an ArrayList and add the ones that aren't in the set to it
-				ArrayList<MyMapEntry<Point, Boolean>> entries = surface.gridSelection.getEntries();
-				ArrayList<MyMapEntry<Point, Boolean>> newEntries = new ArrayList<MyMapEntry<Point, Boolean>>();
-				for(int i = 0; i < entries.size(); i++)
+				ArrayList<Point> newEntries = new ArrayList<Point>();
+				for(int i = 0; i < SelectorTool.selection.size(); i++)
 				{
 					// Taking advantage of the O(1)
-					if(!set.contains(entries.get(i)))
+					if(!set.contains(SelectorTool.selection.get(i)))
 					{
-						newEntries.add(entries.get(i));
+						newEntries.add(SelectorTool.selection.get(i));
 					}
 				}
 				
-				surface.gridSelection.setEntries(newEntries);
+				SelectorTool.selection.clear();
+				SelectorTool.selection.addAll(newEntries);
 			}
 		}
 		else
 		{
 			// Now just make the newSelection the new gridSelection, if we are just doing a normal left click
-			surface.gridSelection = newSelection;
+			SelectorTool.selection.clear();
+			SelectorTool.selection.addAll(newSelection);
 		}
 	}
 
 	public static void drawSelectionRectangle(Point start, Point end, boolean rightClick, boolean preview, ToolSettings settings)
 		{
 			DrawingSurface surface = CanvasContainer.canvas.surface;
-			Canvas canvas = CanvasContainer.canvas;
 			
 			int startX = Math.min(start.x, end.x);
 			int startY = Math.min(start.y, end.y);
 			int endX = Math.max(start.x, end.x);
 			int endY = Math.max(start.y, end.y);
 			
-			canvas.selectPreview.clear();
+			SelectorTool.selectionPreview.clear();
 			
 			// If we are not previewing, we're going to need a new map
-			MyMap<Point, Boolean> newSelection = new MyMap<Point, Boolean>();
+			ArrayList<Point> newSelection = new ArrayList<Point>();
 			
 			for(int i = startX; i <= endX; i++)
 			{
@@ -270,63 +252,56 @@ public class SelectionHandler
 						if(preview)
 						{
 	//						surface.gridOverlay[i][j] = Colour.fromAWTColor(Canvas.SELECTION_COLOUR);
-							canvas.selectPreview.add(new Point(i, j));
+							SelectorTool.selectionPreview.add(new Point(i, j));
 						}
 						else
 						{
-							newSelection.getEntries().add(new MyMapEntry<Point, Boolean>(new Point(i, j), true));
+							newSelection.add(new Point(i, j));
 						}
 					}
 				}
 			}
 			
-			if(rightClick && !preview)
+			if(rightClick)
 			{
 				if(settings.selectionAppend)
 				{
 					// If we are set to selection append, we add the new selection
 					// Use a LinkedHasSet because it disallows duplicates and it's contains method is apparently O(1) instead of ArrayLists' O(n) which is amazing (https://stackoverflow.com/questions/17547360/create-an-arraylist-of-unique-values)
-					LinkedHashSet<MyMapEntry<Point, Boolean>> set = new LinkedHashSet<MyMapEntry<Point, Boolean>>(surface.gridSelection.getEntries());
+					LinkedHashSet<Point> set = new LinkedHashSet<Point>(SelectorTool.selection);
 					
 					// Add all entries in newSelection to the current selection
-					set.addAll(newSelection.getEntries());
+					set.addAll(newSelection);
 					
-					@SuppressWarnings("unchecked")
-					MyMapEntry<Point, Boolean>[] entriesArr = set.toArray((MyMapEntry<Point, Boolean>[])Array.newInstance(MyMapEntry.class, set.size()));
-					ArrayList<MyMapEntry<Point, Boolean>> entries = new ArrayList<MyMapEntry<Point, Boolean>>();
-					
-					// Also could use Arrays.asList combined with ArrayList.addAll but this apparently could be faster and uses less memory
-					for(MyMapEntry<Point, Boolean> entry : entriesArr)
-					{
-						entries.add(entry);
-					}
-					
-					surface.gridSelection.setEntries(entries);
+					SelectorTool.selection.clear();
+					SelectorTool.selection.addAll(set);
 				}
 				else
 				{
 					// If we are not set to selection append, we remove the new selection
 					// Use a LinkedHasSet because it disallows duplicates and it's contains method is apparently O(1) instead of ArrayLists' O(n) which is amazing (https://stackoverflow.com/questions/17547360/create-an-arraylist-of-unique-values)
-					LinkedHashSet<MyMapEntry<Point, Boolean>> set = new LinkedHashSet<MyMapEntry<Point, Boolean>>(newSelection.getEntries());
+					LinkedHashSet<Point> set = new LinkedHashSet<Point>(newSelection);
 					
 					// Instead of removing elements, we'll just create an ArrayList and add the ones that aren't in the set to it
-					ArrayList<MyMapEntry<Point, Boolean>> entries = surface.gridSelection.getEntries();
-					ArrayList<MyMapEntry<Point, Boolean>> newEntries = new ArrayList<MyMapEntry<Point, Boolean>>();
-					for(int i = 0; i < entries.size(); i++)
+					ArrayList<Point> newEntries = new ArrayList<Point>();
+					for(int i = 0; i < SelectorTool.selection.size(); i++)
 					{
 						// Taking advantage of the O(1)
-						if(!set.contains(entries.get(i)))
+						if(!set.contains(SelectorTool.selection.get(i)))
 						{
-							newEntries.add(entries.get(i));
+							newEntries.add(SelectorTool.selection.get(i));
 						}
 					}
 					
-					surface.gridSelection.setEntries(newEntries);
+					SelectorTool.selection.clear();
+					SelectorTool.selection.addAll(newEntries);
 				}
 			}
-			else if(!preview)
+			else
 			{
-				surface.gridSelection = newSelection;
+				// Now just make the newSelection the new gridSelection, if we are just doing a normal left click
+				SelectorTool.selection.clear();
+				SelectorTool.selection.addAll(newSelection);
 			}
 		}
 
@@ -631,7 +606,7 @@ public class SelectionHandler
 				// And now, we have completed our selection, we have our matrix, now we just need to put that into the surface.gridSelection map
 				
 				// Create a new Map
-				MyMap<Point, Boolean> newSelection = new MyMap<Point, Boolean>();
+				ArrayList<Point> newSelection = new ArrayList<Point>();
 				
 				for(int i = 0; i < selected.length; i++)
 				{
@@ -641,11 +616,10 @@ public class SelectionHandler
 						if(selected[i][j])
 						{
 							// Since we know that each entry we are going to add is going to be unique, we can just do that, which saves A LOT of time, especially on larger images
-							newSelection.getEntries().add(new MyMapEntry<Point, Boolean>(new Point(i, j), Boolean.valueOf(true)));
+							newSelection.add(new Point(i, j));
 						}
 					}
 				}
-				
 				
 				if(rightClick)
 				{
@@ -653,60 +627,40 @@ public class SelectionHandler
 					{
 						// If we are set to selection append, we add the new selection
 						// Use a LinkedHasSet because it disallows duplicates and it's contains method is apparently O(1) instead of ArrayLists' O(n) which is amazing (https://stackoverflow.com/questions/17547360/create-an-arraylist-of-unique-values)
-						LinkedHashSet<MyMapEntry<Point, Boolean>> set = new LinkedHashSet<MyMapEntry<Point, Boolean>>(surface.gridSelection.getEntries());
+						LinkedHashSet<Point> set = new LinkedHashSet<Point>(SelectorTool.selection);
 						
 						// Add all entries in newSelection to the current selection
-						set.addAll(newSelection.getEntries());
+						set.addAll(newSelection);
 						
-						@SuppressWarnings("unchecked")
-						MyMapEntry<Point, Boolean>[] entriesArr = set.toArray((MyMapEntry<Point, Boolean>[])Array.newInstance(MyMapEntry.class, set.size()));
-						ArrayList<MyMapEntry<Point, Boolean>> entries = new ArrayList<MyMapEntry<Point, Boolean>>();
-						
-						// Also could use Arrays.asList combined with ArrayList.addAll but this apparently could be faster and uses less memory
-						for(MyMapEntry<Point, Boolean> entry : entriesArr)
-						{
-							entries.add(entry);
-						}
-						
-						surface.gridSelection.setEntries(entries);
+						SelectorTool.selection.clear();
+						SelectorTool.selection.addAll(set);
 					}
 					else
 					{
 						// If we are not set to selection append, we remove the new selection
 						// Use a LinkedHasSet because it disallows duplicates and it's contains method is apparently O(1) instead of ArrayLists' O(n) which is amazing (https://stackoverflow.com/questions/17547360/create-an-arraylist-of-unique-values)
-						LinkedHashSet<MyMapEntry<Point, Boolean>> set = new LinkedHashSet<MyMapEntry<Point, Boolean>>(newSelection.getEntries());
+						LinkedHashSet<Point> set = new LinkedHashSet<Point>(newSelection);
 						
 						// Instead of removing elements, we'll just create an ArrayList and add the ones that aren't in the set to it
-						ArrayList<MyMapEntry<Point, Boolean>> entries = surface.gridSelection.getEntries();
-						ArrayList<MyMapEntry<Point, Boolean>> newEntries = new ArrayList<MyMapEntry<Point, Boolean>>();
-						for(int i = 0; i < entries.size(); i++)
+						ArrayList<Point> newEntries = new ArrayList<Point>();
+						for(int i = 0; i < SelectorTool.selection.size(); i++)
 						{
 							// Taking advantage of the O(1)
-							if(!set.contains(entries.get(i)))
+							if(!set.contains(SelectorTool.selection.get(i)))
 							{
-								newEntries.add(entries.get(i));
+								newEntries.add(SelectorTool.selection.get(i));
 							}
 						}
 						
-						surface.gridSelection.setEntries(newEntries);
-						
-	//					@SuppressWarnings("unchecked")
-	//					MyMapEntry<Point, Boolean>[] entriesArr = set.toArray((MyMapEntry<Point, Boolean>[])Array.newInstance(MyMapEntry.class, set.size()));
-	//					ArrayList<MyMapEntry<Point, Boolean>> entries = new ArrayList<MyMapEntry<Point, Boolean>>();
-	//					
-	//					// Also could use Arrays.asList combined with ArrayList.addAll but this apparently could be faster and uses less memory
-	//					for(MyMapEntry<Point, Boolean> entry : entriesArr)
-	//					{
-	//						entries.add(entry);
-	//					}
-	//					
-	//					surface.gridSelection.setEntries(entries);
+						SelectorTool.selection.clear();
+						SelectorTool.selection.addAll(newEntries);
 					}
 				}
 				else
 				{
 					// Now just make the newSelection the new gridSelection, if we are just doing a normal left click
-					surface.gridSelection = newSelection;
+					SelectorTool.selection.clear();
+					SelectorTool.selection.addAll(newSelection);
 				}
 				
 				// And we also need to clear the path and pathClose ArrayLists in Canvas, otherwise things go a bit pear-shaped. (We have references to both those ArrayLists)

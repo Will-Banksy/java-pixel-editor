@@ -5,7 +5,7 @@ import java.awt.event.MouseEvent;
 import jpixeleditor.utils.EditorTools;
 import jpixeleditor.utils.SelectionHandler;
 
-public class ColourSelection extends Tool
+public class ColourSelection extends SelectorTool
 {
 	public ColourSelection(int id)
 	{
@@ -21,6 +21,9 @@ public class ColourSelection extends Tool
 	{
 		super.onMouseClicked(me);
 		
+		if(!shouldDoToolAction)
+			return;
+		
 		if(currMouseButton == MouseButton.LEFT)
 		{
 			SelectionHandler.colourSelect(curr, false, EditorTools.selectedTool.settings);
@@ -29,5 +32,10 @@ public class ColourSelection extends Tool
 		{
 			SelectionHandler.colourSelect(curr, true, EditorTools.selectedTool.settings);
 		}
+	}
+
+	@Override public boolean triggersOnClick()
+	{
+		return true;
 	}
 }

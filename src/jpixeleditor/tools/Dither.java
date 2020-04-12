@@ -11,4 +11,6 @@ public class Dither extends Tool
 		keyShortcut = "D";
 		iconPath = "/Dither.png";
 	}
+	
+	// --
 }

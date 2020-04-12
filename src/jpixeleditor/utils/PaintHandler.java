@@ -252,8 +252,7 @@ public class PaintHandler
 							surface.gridOverlay[i][j] = colour;
 							break;
 							
-						case SELECTION:
-							surface.gridSelection.put(new Point(i, j), Boolean.valueOf(true));
+						default:
 							break;
 					}
 				}
@@ -297,8 +296,7 @@ public class PaintHandler
 											surface.gridOverlay[x][y] = colour;
 											break;
 											
-										case SELECTION:
-											surface.gridSelection.put(new Point(i, j), Boolean.valueOf(true));
+										default:
 											break;
 									}
 								}
@@ -529,8 +527,7 @@ public class PaintHandler
 					surface.gridOverlay[i][j] = colour;
 					break;
 					
-				case SELECTION:
-					surface.gridSelection.put(new Point(i, j), Boolean.valueOf(true));
+				default:
 					break;
 			}
 		}

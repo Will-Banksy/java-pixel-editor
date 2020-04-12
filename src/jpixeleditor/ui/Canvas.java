@@ -21,8 +21,10 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import jpixeleditor.main.Main;
+import jpixeleditor.Main;
 import jpixeleditor.tools.FreeSelection;
+import jpixeleditor.tools.Move;
+import jpixeleditor.tools.SelectorTool;
 import jpixeleditor.utils.Colour;
 import jpixeleditor.utils.EditorTools;
 import jpixeleditor.utils.Helper;
@@ -40,7 +42,6 @@ public class Canvas extends Panel
 		//public int[][] prevGridColours; // Original plan to improve performance: Only redraw pixels that have changed
 		public int[][] gridColours;
 		public int[][] gridOverlay;
-		public MyMap<Point, Boolean> gridSelection; // TODO: Turn this into something other than a map, probably, as I really don't need it's map capabilities and I don't use the Boolean at all
 		
 		public Canvas canvas;
 		
@@ -57,8 +58,6 @@ public class Canvas extends Panel
 			gridHeight = height;
 			gridColours = new int[gridWidth][gridHeight];
 			gridOverlay = new int[gridWidth][gridHeight];
-			
-			gridSelection = new MyMap<Point, Boolean>();
 		}
 		
 		public Dimension getGridDims()
@@ -100,147 +99,6 @@ public class Canvas extends Panel
 				}
 			}
 		}
-		
-		public void clearSelection()
-		{
-			gridSelection.clear();
-		}
-		
-		public boolean selectionEmpty()
-		{
-			return gridSelection.getEntries().isEmpty();
-		}
-		
-		public void updateSelection(int offX, int offY)
-		{
-			for(MyMapEntry<Point, Boolean> entry : gridSelection.getEntries())
-			{
-				Point p = entry.getKey();
-				p.x += offX;
-				p.y += offY;
-			}
-		}
-		
-		public MyMap<Point, Integer> getSelectedPixelMap()
-		{
-			ArrayList<MyMapEntry<Point, Integer>> entries = new ArrayList<MyMapEntry<Point, Integer>>();
-			
-			ArrayList<MyMapEntry<Point, Boolean>> selected = gridSelection.getEntries();
-			
-			for(MyMapEntry<Point, Boolean> entry : selected)
-			{
-				Point p = entry.getKey();
-				if(Colour.getAlpha(gridColours[p.x][p.y]) != 0)
-				{
-					Integer value = Integer.valueOf(gridColours[p.x][p.y]);
-					gridColours[p.x][p.y] = Colour.TRANSPARENT;
-					
-					entries.add(new MyMapEntry<Point, Integer>(p, value));
-				}
-			}
-			
-			MyMap<Point, Integer> map = new MyMap<Point, Integer>();
-			map.setEntries(entries);
-			
-			return map;
-		}
-		
-		public void setPixelMap(MyMap<Point, Integer> map)
-		{
-			// I don't know why iterating over the map.keySet() and using map.get(key) didn't work. Nevermind though, the below method is faster as well as working!
-			
-			for(MyMapEntry<Point, Integer> entry : map.getEntries())
-			{
-			    Point p = entry.getKey();
-			    Integer value = entry.getValue();
-			    if(contains(p.x, p.y) && value != null)
-				{
-					gridColours[p.x][p.y] = value.intValue();
-				}
-			}
-		}
-		
-		public void moveMap(MyMap<Point, Integer> map, int offX, int offY)
-		{
-			for(MyMapEntry<Point, Integer> entry : map.getEntries())
-			{
-				Point p = entry.getKey();
-				p.x += offX;
-				p.y += offY;
-			}
-		}
-
-//		public Integer[][] grabPixels()
-//		{
-//			Integer[][] res = new Integer[gridWidth][gridHeight];
-//			
-//			for(int i = 0; i < gridWidth; i++)
-//			{
-//				for(int j = 0; j < gridHeight; j++)
-//				{
-//					if(gridSelected[i][j])
-//					{
-//						res[i][j] = Colour.getAlpha(gridColours[i][j]) == 0 ? null : Integer.valueOf(gridColours[i][j]);
-//						gridColours[i][j] = Colour.TRANSPARENT;
-//					}
-//					else
-//					{
-//						res[i][j] = null;
-//					}
-//				}
-//			}
-//			
-//			return res;
-//		}
-		
-//		public void setPixels(Integer[][] grabbedPixels, int offX, int offY)
-//		{
-//			for(int i = 0; i < gridWidth; i++)
-//			{
-//				for(int j = 0; j < gridHeight; j++)
-//				{
-//					int newI = i - offX;
-//					int newJ = j - offY;
-//					
-//					if(newI >= 0 && newI < getGridDims().width && newJ >= 0 && newJ < getGridDims().height && grabbedPixels[i][j] != null)
-//					{
-//						gridColours[i][j] = grabbedPixels[i][j].intValue();
-//						//temp[i][j] = gridSelected[newI][newJ];
-//					}
-////					else
-////					{
-////						//temp[i][j] = false;
-////					}
-//				}
-//			}
-//			
-//			//Helper.copyMatrix(temp, gridSelected);
-//		}
-		
-//		public void moveBy(Integer[][] grabbedPixels, int offX, int offY)
-//		{
-//			Integer[][] temp = new Integer[gridWidth][gridHeight];
-//			
-//			for(int i = 0; i < gridWidth; i++)
-//			{
-//				for(int j = 0; j < gridHeight; j++)
-//				{
-//					int newI = i - offX;
-//					int newJ = j - offY;
-//					
-//					if(newI >= 0 && newI < getGridDims().width && newJ >= 0 && newJ < getGridDims().height)
-//					{
-//						temp[i][j] = grabbedPixels[newI][newJ];
-//					}
-//					else
-//					{
-//						temp[i][j] = null;
-//					}
-//				}
-//			}
-//			
-//			Helper.copyMatrix(temp, grabbedPixels);
-//		}
 	}
 
 	public static class Zoom
@@ -347,17 +205,17 @@ public class Canvas extends Panel
 	public Rectangle prevRect = null;
 	public Point offset = null;
 	
-	/**
-	 * Used for nice selection - if the selection was not empty when the mouse was pressed (left click only), this is true. Set to false when the mouse is clicked
-	 */
-	boolean prevSelectionNotEmpty = false;
-	// Both of these will be in terms of the grid
-	public Point selectionMoveOrigin = null;
-	public Point selectionPrevPoint = null;
-	boolean isDraggingSelection = false;
-	boolean isMovingSelectionContent = false;
-	public Integer[][] grabbedPixels = null;
-	public MyMap<Point, Integer> grabbedPixelsMap = new MyMap<Point, Integer>(); // TODO: Delete the MyMap class and rename/remove MyMapEntry too - Use some other map implementation. Hashmaps are fast, but I had problems with them apparently
+//	/**
+//	 * Used for nice selection - if the selection was not empty when the mouse was pressed (left click only), this is true. Set to false when the mouse is clicked
+//	 */
+//	boolean prevSelectionNotEmpty = false;
+//	// Both of these will be in terms of the grid
+//	public Point selectionMoveOrigin = null;
+//	public Point selectionPrevPoint = null;
+//	boolean isDraggingSelection = false;
+//	boolean isMovingSelectionContent = false;
+//	public Integer[][] grabbedPixels = null;
+//	public MyMap<Point, Integer> grabbedPixelsMap = new MyMap<Point, Integer>(); // TODO: Delete the MyMap class and rename/remove MyMapEntry too - Use some other map implementation. Hashmaps are fast, but I had problems with them apparently
 	// HashMaps were not working like I expected, so I just made my own Map thing. Without extending/implementing Map or anything of course
 	/*
 	 * Grab pixels - put in map (Point corresponding to position, Integer to colour). Point.equals checks whether the x and y variables are equal, so shouldn't have any nasty behaviour
@@ -367,13 +225,11 @@ public class Canvas extends Panel
 	 */
 	
 	// Need this for drawing pixel-perfect lines (Point = position of pixel, Integer = previousColour of pixel)
-	public ArrayList<MyMapEntry<Point, Integer>> currentStroke;
+//	public ArrayList<MyMapEntry<Point, Integer>> currentStroke;
 	
-	public ArrayList<Point> selectPreview = new ArrayList<Point>();
+//	public ArrayList<Point> selectPreview = new ArrayList<Point>();
 	
 	public Point debugPoint = null;
-	
-	public Point canvasContentOffset = null; // If null, not using Move tool to move canvas content
 	
 	/*
 	 * -- NOTES FOR FUTURE --
@@ -408,15 +264,16 @@ public class Canvas extends Panel
 		addMouseListener(new MouseListener() {
 			@Override public void mouseClicked(MouseEvent me)
 			{
-				if(prevSelectionNotEmpty && SwingUtilities.isLeftMouseButton(me))
-				{
-					finishSelection();
-					repaint();
-					
-					prevSelectionNotEmpty = false;
-				}
-				
-				prevSelectionNotEmpty = false;
+//				if(prevSelectionNotEmpty && SwingUtilities.isLeftMouseButton(me))
+//				{
+//					finishSelection();
+//					repaint();
+//					
+//					prevSelectionNotEmpty = false;
+//				}
+//				
+//				prevSelectionNotEmpty = false;
+				EditorTools.selectedTool.onMouseClicked(me);
 			}
 
 			@Override public void mouseEntered(MouseEvent me)
@@ -431,54 +288,54 @@ public class Canvas extends Panel
 
 			@Override public void mousePressed(MouseEvent me)
 			{
-				Point mouseOnGrid = surface.canvasToGrid(me.getX(), me.getY());
-				if(surface.gridSelection.containsKey(new Point(mouseOnGrid.x, mouseOnGrid.y)) && SwingUtilities.isLeftMouseButton(me))
-				{
-					isDraggingSelection = true;
-					selectionMoveOrigin = mouseOnGrid;
-					selectionPrevPoint = mouseOnGrid;
-					
-					if(me.isShiftDown()/* && !isMovingSelectionContent*/)
-					{
-						isMovingSelectionContent = true;
-//						grabbedPixels = surface.grabPixels();
-						if(grabbedPixelsMap.isEmpty())
-						{
-							grabbedPixelsMap = surface.getSelectedPixelMap();
-						}
-						else
-						{
-							grabbedPixelsMap.concat(surface.getSelectedPixelMap()); // This means if you are already dragging stuff around, and you put your selection over some pixels, if you left-click + shift you can pick them up as well!
-						}
-					}
-					
-					return;
-				}
-				
-				// This, and what is in mouseClicked makes selection work nicely
-				if(EditorTools.selectedTool.isSelector) // Also added listener for mouseClicked on CanvasContainer so that when you click out of the canvas it clears the selection too
-				{
-					if(!surface.selectionEmpty())
-					{
-						if(SwingUtilities.isLeftMouseButton(me))
-						{
-//							surface.clearSelection();
-//							if(isMovingSelectionContent)
-//							{
-////								surface.setPixels(grabbedPixels, selectionOffset.x, selectionOffset.y);
-//								surface.setPixelMap(grabbedPixelsMap);
-//								grabbedPixelsMap = null;
-//								isMovingSelectionContent = false;
-//							}
-							finishSelection();
-							
-							if(EditorTools.selectedTool.triggerType == EditorTools.ToolInfo.ON_PRESS)
-								return;
-							
-							prevSelectionNotEmpty = true;
-						}
-					}
-				}
+//				Point mouseOnGrid = surface.canvasToGrid(me.getX(), me.getY());
+//				if(surface.gridSelection.containsKey(new Point(mouseOnGrid.x, mouseOnGrid.y)) && SwingUtilities.isLeftMouseButton(me))
+//				{
+//					isDraggingSelection = true;
+//					selectionMoveOrigin = mouseOnGrid;
+//					selectionPrevPoint = mouseOnGrid;
+//					
+//					if(me.isShiftDown()/* && !isMovingSelectionContent*/)
+//					{
+//						isMovingSelectionContent = true;
+////						grabbedPixels = surface.grabPixels();
+//						if(grabbedPixelsMap.isEmpty())
+//						{
+//							grabbedPixelsMap = surface.getSelectedPixelMap();
+//						}
+//						else
+//						{
+//							grabbedPixelsMap.concat(surface.getSelectedPixelMap()); // This means if you are already dragging stuff around, and you put your selection over some pixels, if you left-click + shift you can pick them up as well!
+//						}
+//					}
+//					
+//					return;
+//				}
+//				
+//				// This, and what is in mouseClicked makes selection work nicely
+//				if(EditorTools.selectedTool.isSelector) // Also added listener for mouseClicked on CanvasContainer so that when you click out of the canvas it clears the selection too
+//				{
+//					if(!surface.selectionEmpty())
+//					{
+//						if(SwingUtilities.isLeftMouseButton(me))
+//						{
+////							surface.clearSelection();
+////							if(isMovingSelectionContent)
+////							{
+//////								surface.setPixels(grabbedPixels, selectionOffset.x, selectionOffset.y);
+////								surface.setPixelMap(grabbedPixelsMap);
+////								grabbedPixelsMap = null;
+////								isMovingSelectionContent = false;
+////							}
+//							finishSelection();
+//							
+//							if(EditorTools.selectedTool.triggerType == EditorTools.ToolInfo.ON_PRESS)
+//								return;
+//							
+//							prevSelectionNotEmpty = true;
+//						}
+//					}
+//				}
 				
 //				if(EditorTools.selectedTool.info.triggerType == EditorTools.ToolInfo.ON_PRESS)
 //				{
@@ -504,34 +361,34 @@ public class Canvas extends Panel
 
 			@Override public void mouseReleased(MouseEvent me)
 			{
-				if(isDraggingSelection)
-				{
-					Point mouseOnGrid = surface.canvasToGrid(me.getX(), me.getY());
-//					selectionOffset = new Point(mouseOnGrid.x - selectionMoveOrigin.x, mouseOnGrid.y - selectionMoveOrigin.y);
-					
-					int offX = mouseOnGrid.x - selectionPrevPoint.x;
-					int offY = mouseOnGrid.y - selectionPrevPoint.y;
-					
-					surface.updateSelection(offX, offY);
-					if(isMovingSelectionContent)
-					{
-						surface.moveMap(grabbedPixelsMap, offX, offY);
-					}
-					
-					selectionPrevPoint = null;
-//					surface.updateSelection(selectionOffset.x, selectionOffset.y);
-					
+//				if(isDraggingSelection)
+//				{
+//					Point mouseOnGrid = surface.canvasToGrid(me.getX(), me.getY());
+////					selectionOffset = new Point(mouseOnGrid.x - selectionMoveOrigin.x, mouseOnGrid.y - selectionMoveOrigin.y);
+//					
+//					int offX = mouseOnGrid.x - selectionPrevPoint.x;
+//					int offY = mouseOnGrid.y - selectionPrevPoint.y;
+//					
+//					surface.updateSelection(offX, offY);
 //					if(isMovingSelectionContent)
 //					{
-////						surface.moveBy(grabbedPixels, selectionOffset.x, selectionOffset.y);
-//						surface.moveMap(grabbedPixelsMap, selectionOffset.x, selectionOffset.y);
+//						surface.moveMap(grabbedPixelsMap, offX, offY);
 //					}
-					repaint();
-					
-					isDraggingSelection = false;
-					
-					return;
-				}
+//					
+//					selectionPrevPoint = null;
+////					surface.updateSelection(selectionOffset.x, selectionOffset.y);
+//					
+////					if(isMovingSelectionContent)
+////					{
+//////						surface.moveBy(grabbedPixels, selectionOffset.x, selectionOffset.y);
+////						surface.moveMap(grabbedPixelsMap, selectionOffset.x, selectionOffset.y);
+////					}
+//					repaint();
+//					
+//					isDraggingSelection = false;
+//					
+//					return;
+//				}
 				
 //				if(EditorTools.selectedTool.info.triggerType == EditorTools.ToolInfo.ON_HOLD)
 //				{
@@ -556,22 +413,22 @@ public class Canvas extends Panel
 		addMouseMotionListener(new MouseMotionListener() {
 			@Override public void mouseDragged(MouseEvent me)
 			{
-				if(isDraggingSelection)
-				{
-					Point mouseOnGrid = surface.canvasToGrid(me.getX(), me.getY());
-					int offX = mouseOnGrid.x - selectionPrevPoint.x;
-					int offY = mouseOnGrid.y - selectionPrevPoint.y;
-					surface.updateSelection(offX, offY);
-//					if(isMovingSelectionContent)
-//					{
-//						surface.moveMap(grabbedPixelsMap, offX, offY); // This seems to do double move, if that makes sense
-//					}
-					selectionPrevPoint = mouseOnGrid;
-					
-					repaint();
-					
-					return;
-				}
+//				if(isDraggingSelection)
+//				{
+//					Point mouseOnGrid = surface.canvasToGrid(me.getX(), me.getY());
+//					int offX = mouseOnGrid.x - selectionPrevPoint.x;
+//					int offY = mouseOnGrid.y - selectionPrevPoint.y;
+//					surface.updateSelection(offX, offY);
+////					if(isMovingSelectionContent)
+////					{
+////						surface.moveMap(grabbedPixelsMap, offX, offY); // This seems to do double move, if that makes sense
+////					}
+//					selectionPrevPoint = mouseOnGrid;
+//					
+//					repaint();
+//					
+//					return;
+//				}
 				
 //				if(EditorTools.selectedTool.info.triggerType == EditorTools.ToolInfo.ON_HOLD)
 //				{
@@ -601,9 +458,8 @@ public class Canvas extends Panel
 		Action deleteSelection = new AbstractAction() {
 			@Override public void actionPerformed(ActionEvent e)
 			{
-				for(MyMapEntry<Point, Boolean> entry : surface.gridSelection.getEntries())
+				for(Point p : SelectorTool.selection)
 				{
-					Point p = entry.getKey();
 					if(surface.contains(p.x, p.y))
 					{
 						surface.gridColours[p.x][p.y]= Colour.TRANSPARENT;
@@ -635,20 +491,20 @@ public class Canvas extends Panel
 //		});
 	}
 	
-	/**
-	 * Finishes the selection - clears the selection, sets the appropriate variables, places and clears any dragged content, stuff like that
-	 */
-	public void finishSelection()
-	{
-		surface.clearSelection();
-		if(grabbedPixelsMap != null)
-		{
-			surface.setPixelMap(grabbedPixelsMap);
-			grabbedPixelsMap.clear();
-			isMovingSelectionContent = false;
-		}
-		isDraggingSelection = false;
-	}
+//	/**
+//	 * Finishes the selection - clears the selection, sets the appropriate variables, places and clears any dragged content, stuff like that
+//	 */
+//	public void finishSelection()
+//	{
+//		surface.clearSelection();
+//		if(grabbedPixelsMap != null)
+//		{
+//			surface.setPixelMap(grabbedPixelsMap);
+//			grabbedPixelsMap.clear();
+//			isMovingSelectionContent = false;
+//		}
+//		isDraggingSelection = false;
+//	}
 	
 	public void resetBounds()
 	{
@@ -727,13 +583,13 @@ public class Canvas extends Panel
 		boolean[][] selectPrev = new boolean[surface.gridWidth][surface.gridHeight];
 		boolean[][] grabbed = new boolean[surface.gridWidth][surface.gridHeight];
 		
-		ArrayList<MyMapEntry<Point, Integer>> grabbedList = grabbedPixelsMap != null ? grabbedPixelsMap.getEntries() : new ArrayList<MyMapEntry<Point, Integer>>();
+		ArrayList<MyMapEntry<Point, Integer>> grabbedList = SelectorTool.grabbedPixelsMap;
 		
 		ArrayList<Point> lassoPath = FreeSelection.lassoPath;
 		ArrayList<Point> pathClose = FreeSelection.pathClose;
 		
 		// Just doing this to avoid doing multiple loops, which would most likely be slightly slower and more code
-		int loopTo = (int)Helper.getMax(surface.gridSelection.getEntries().size(), lassoPath.size(), pathClose.size(), selectPreview.size(), grabbedList.size());
+		int loopTo = (int)Helper.getMax(SelectorTool.selection.size(), FreeSelection.lassoPath.size(), FreeSelection.pathClose.size(), SelectorTool.selectionPreview.size(), grabbedList.size());
 		for(int i = 0; i < loopTo; i++)
 		{
 			// Add all points from the relevant ArrayLists to the relevant 2d arrays/matrices
@@ -755,18 +611,24 @@ public class Canvas extends Panel
 					selectPrev[x][y] = true;
 				}
 			}
-			if(i < surface.gridSelection.getEntries().size())
+			if(i < SelectorTool.selection.size())
 			{
-				Point p = surface.gridSelection.getEntries().get(i).getKey();
+				// Cloning because otherwise if we apply the offset it changes the original
+				Point p = (Point)SelectorTool.selection.get(i).clone();
+				if(SelectorTool.selectionOffset != null)
+				{
+					p.x += SelectorTool.selectionOffset.x;
+					p.y += SelectorTool.selectionOffset.y;
+				}
 				if(surface.contains(p.x, p.y))
 				{
-					selected[p.x][p.y]= true; 
+					selected[p.x][p.y] = true; 
 				}
 			}
-			if(i < selectPreview.size())
+			if(i < SelectorTool.selectionPreview.size())
 			{
-				int x = selectPreview.get(i).x;
-				int y = selectPreview.get(i).y;
+				int x = SelectorTool.selectionPreview.get(i).x;
+				int y = SelectorTool.selectionPreview.get(i).y;
 				if(surface.contains(x, y))
 				{
 					selectPrev[x][y] = true;
@@ -774,7 +636,12 @@ public class Canvas extends Panel
 			}
 			if(i < grabbedList.size())
 			{
-				Point p = grabbedList.get(i).getKey();
+				Point p = (Point)grabbedList.get(i).getKey().clone();
+				if(SelectorTool.selectionOffset != null)
+				{
+					p.x += SelectorTool.selectionOffset.x;
+					p.y += SelectorTool.selectionOffset.y;
+				}
 				if(surface.contains(p.x, p.y))
 				{
 					grabbed[p.x][p.y] = true;
@@ -793,10 +660,10 @@ public class Canvas extends Panel
 					int posY = j;
 					
 					// If using the move tool (canvasContentOffset is not null) then shift the positions by the offset
-					if(canvasContentOffset != null)
+					if(Move.canvasContentOffset != null)
 					{
-						posX = i - canvasContentOffset.x;
-						posY = j - canvasContentOffset.y;
+						posX = i - Move.canvasContentOffset.x;
+						posY = j - Move.canvasContentOffset.y;
 						
 						// Return if we are out of bounds
 						if(!surface.contains(posX, posY))

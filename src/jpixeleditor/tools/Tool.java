@@ -82,6 +82,7 @@ public abstract class Tool
 	 */
 	public void onMouseDragged(MouseEvent me)
 	{
+		CanvasContainer.canvas.surface.clearOverlay();
 		if(firstDragEvent)
 			prev = (Point)start.clone();
 		else
@@ -99,6 +100,7 @@ public abstract class Tool
 	 */
 	public void onMouseReleased(MouseEvent me)
 	{
+		CanvasContainer.canvas.surface.clearOverlay();
 		if(firstDragEvent)
 			prev = (Point)start.clone();
 		else

@@ -8,7 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import javax.swing.JButton;
 
-import jpixeleditor.main.Main;
+import jpixeleditor.Main;
 import jpixeleditor.utils.Colour;
 
 @SuppressWarnings("serial")

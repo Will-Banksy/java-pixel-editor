@@ -7,7 +7,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JToolTip;
 
-import jpixeleditor.main.Main;
+import jpixeleditor.Main;
 
 @SuppressWarnings("serial")
 public class ToolTip extends JToolTip

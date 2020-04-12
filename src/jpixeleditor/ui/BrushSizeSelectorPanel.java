@@ -9,7 +9,7 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import jpixeleditor.main.Main;
+import jpixeleditor.Main;
 import jpixeleditor.ui.ToolTipsHandler.TooltipLocation;
 import jpixeleditor.utils.Colour;
 import jpixeleditor.utils.EditorTools;

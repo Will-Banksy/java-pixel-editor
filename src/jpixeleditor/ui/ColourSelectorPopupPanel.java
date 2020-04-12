@@ -36,7 +36,7 @@ import javax.swing.text.DocumentFilter;
 
 import com.jhlabs.image.GaussianFilter;
 
-import jpixeleditor.main.Main;
+import jpixeleditor.Main;
 import jpixeleditor.ui.ColourSelectorPopupPanel.ColourDescriptor;
 import jpixeleditor.utils.Colour;
 import jpixeleditor.utils.EditorTools;

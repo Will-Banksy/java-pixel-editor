@@ -20,19 +20,58 @@ public class RectangularSelection extends SelectorTool
 	{
 		super.onMousePressed(me);
 		
-		SelectionHandler.drawSelectionRectangle(start, curr, false, true, settings);
+		if(!shouldDoToolAction)
+			return;
+		
+		boolean rightClick = false;
+		
+		switch(currMouseButton)
+		{
+			case LEFT:
+				break;
+				
+			case RIGHT:
+				rightClick = true;
+				break;
+				
+			default:
+				return;
+		}
+		
+		SelectionHandler.drawSelectionRectangle(start, curr, rightClick, true, settings);
 	}
 	
 	@Override public void onMouseDragged(MouseEvent me)
 	{
 		super.onMouseDragged(me);
 		
-		SelectionHandler.drawSelectionRectangle(start, curr, false, true, settings);
+		if(!shouldDoToolAction)
+			return;
+		
+		boolean rightClick = false;
+		
+		switch(currMouseButton)
+		{
+			case LEFT:
+				break;
+				
+			case RIGHT:
+				rightClick = true;
+				break;
+				
+			default:
+				return;
+		}
+		
+		SelectionHandler.drawSelectionRectangle(start, curr, rightClick, true, settings);
 	}
 	
 	@Override public void onMouseReleased(MouseEvent me)
 	{
 		super.onMouseReleased(me);
+		
+		if(!shouldDoToolAction)
+			return;
 		
 		boolean rightClick = false;
 		

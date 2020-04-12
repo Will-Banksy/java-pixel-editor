@@ -8,7 +8,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
-import jpixeleditor.main.Main;
+import jpixeleditor.Main;
 import jpixeleditor.ui.CanvasContainer;
 import jpixeleditor.ui.Canvas.DrawingSurface;
 import jpixeleditor.utils.PaintHandler.DrawTo;

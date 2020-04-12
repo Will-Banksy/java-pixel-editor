@@ -5,7 +5,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.SwingUtilities;
 
-import jpixeleditor.main.Main;
+import jpixeleditor.Main;
 import jpixeleditor.tools.Bucket;
 import jpixeleditor.tools.ColourSelection;
 import jpixeleditor.tools.Dither;
