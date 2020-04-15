@@ -1,6 +1,8 @@
 package jpixeleditor.tools;
 
 import java.awt.event.MouseEvent;
+
+import jpixeleditor.tools.Tool.MouseButton;
 import jpixeleditor.utils.Colour;
 import jpixeleditor.utils.EditorTools;
 import jpixeleditor.utils.PaintHandler;
@@ -22,6 +24,9 @@ public class Eraser extends Tool
 	{
 		super.onMousePressed(me);
 		
+		if(currMouseButton != MouseButton.RIGHT && currMouseButton != MouseButton.LEFT)
+			return;
+		
 		int col = Colour.TRANSPARENT;
 		
 		PaintHandler.paint(curr.x, curr.y, col, DrawTo.CANVAS, EditorTools.brushSize, settings.circleBrush);
@@ -31,6 +36,9 @@ public class Eraser extends Tool
 	{
 		super.onMouseDragged(me);
 		
+		if(currMouseButton != MouseButton.RIGHT && currMouseButton != MouseButton.LEFT)
+			return;
+		
 		int col = Colour.TRANSPARENT;
 		
 		PaintHandler.drawLine(prev, curr, col, DrawTo.CANVAS, EditorTools.brushSize, settings);
@@ -39,6 +47,9 @@ public class Eraser extends Tool
 	@Override public void onMouseReleased(MouseEvent me)
 	{
 		super.onMouseReleased(me);
+		
+		if(currMouseButton != MouseButton.RIGHT && currMouseButton != MouseButton.LEFT)
+			return;
 		
 		int col = Colour.TRANSPARENT;
 		

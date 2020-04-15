@@ -12,7 +12,7 @@ public class Replace extends Tool
 		
 		name = "Colour Replace";
 		description = "Replaces all pixels of one colour with another";
-		keyShortcut = "P";
+		keyShortcut = "A";
 		iconPath = "/Replace.png";
 	}
 	

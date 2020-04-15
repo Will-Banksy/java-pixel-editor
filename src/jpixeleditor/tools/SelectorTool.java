@@ -3,8 +3,11 @@ package jpixeleditor.tools;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 import jpixeleditor.ui.Canvas.DrawingSurface;
+import jpixeleditor.tools.Tool.MouseButton;
 import jpixeleditor.ui.CanvasContainer;
 import jpixeleditor.utils.Colour;
 import jpixeleditor.utils.MyMap.MyMapEntry;
@@ -41,6 +44,12 @@ public abstract class SelectorTool extends Tool
 	{
 		super.onMousePressed(me);
 		
+		if(currMouseButton != MouseButton.RIGHT && currMouseButton != MouseButton.LEFT)
+		{
+			shouldDoToolAction = false;
+			return;
+		}
+		
 		shouldDoToolAction = true;
 		
 		if(currMouseButton == MouseButton.LEFT)
@@ -55,7 +64,7 @@ public abstract class SelectorTool extends Tool
 					pickupPixels();
 				}
 			}
-			else if(selection.size() > 0)
+			else if(selection.size() > 0 && !triggersOnClick())
 			{
 				finishSelection();
 			}
@@ -66,6 +75,12 @@ public abstract class SelectorTool extends Tool
 	{
 		super.onMouseDragged(me);
 		
+		if(currMouseButton != MouseButton.RIGHT && currMouseButton != MouseButton.LEFT)
+		{
+			shouldDoToolAction = false;
+			return;
+		}
+		
 		if(isDraggingSelection)
 		{
 			selectionOffset = new Point(curr.x - start.x, curr.y - start.y);
@@ -75,6 +90,12 @@ public abstract class SelectorTool extends Tool
 	@Override public void onMouseReleased(MouseEvent me)
 	{
 		super.onMouseReleased(me);
+		
+		if(currMouseButton != MouseButton.RIGHT && currMouseButton != MouseButton.LEFT)
+		{
+			shouldDoToolAction = false;
+			return;
+		}
 		
 		if(isDraggingSelection)
 		{
@@ -90,10 +111,19 @@ public abstract class SelectorTool extends Tool
 	{
 		super.onMouseClicked(me);
 		
+		if(currMouseButton != MouseButton.RIGHT && currMouseButton != MouseButton.LEFT)
+		{
+			shouldDoToolAction = false;
+			return;
+		}
+		
 		// If you click anywhere, it clears the selection
 		if(currMouseButton == MouseButton.LEFT && selection.size() > 0)
 		{
 			finishSelection();
+			
+			if(triggersOnClick())
+				shouldDoToolAction = false;
 		}
 		else
 		{
@@ -116,6 +146,7 @@ public abstract class SelectorTool extends Tool
 			if(surface.contains(p.x, p.y) && Colour.getAlpha(surface.gridColours[p.x][p.y]) > 0)
 			{
 				grabbedPixelsMap.add(new MyMapEntry<Point, Integer>((Point)p.clone(), surface.gridColours[p.x][p.y]));
+				surface.gridColours[p.x][p.y] = Colour.TRANSPARENT; 
 			}
 		}
 	}
@@ -145,11 +176,14 @@ public abstract class SelectorTool extends Tool
 	
 	private static void setPixels()
 	{
+		// Put the selection into a LinkedHashSet, so for each grabbed pixel I can check if it's in the selection much more quickly (O(1), instead of O(n))
+//		LinkedHashSet<Point> selected = new LinkedHashSet<Point>(selection);
+		
 		DrawingSurface surface = CanvasContainer.canvas.surface;
 		for(MyMapEntry<Point, Integer> entry : grabbedPixelsMap)
 		{
 			Point p = entry.getKey();
-			if(surface.contains(p.x, p.y))
+			if(surface.contains(p.x, p.y))// && selected.contains(p))
 			{
 				surface.gridColours[p.x][p.y] = entry.getValue().intValue(); 
 			}

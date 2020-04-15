@@ -3,6 +3,7 @@ package jpixeleditor.tools;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 
+import jpixeleditor.tools.Tool.MouseButton;
 import jpixeleditor.ui.Canvas;
 import jpixeleditor.ui.Canvas.DrawingSurface;
 import jpixeleditor.ui.CanvasContainer;
@@ -17,7 +18,7 @@ public class Move extends Tool
 		super(id);
 		
 		name = "Move";
-		description = "Moves the canvas content";
+		description = "Moves the canvas content\nWhile dragging with one button, click with the other to return to original position";
 		keyShortcut = "M";
 		iconPath = "/Hand.png";
 	}
@@ -25,6 +26,9 @@ public class Move extends Tool
 	@Override public void onMouseReleased(MouseEvent me)
 	{
 		super.onMouseReleased(me);
+		
+		if(currMouseButton != MouseButton.RIGHT && currMouseButton != MouseButton.LEFT)
+			return;
 		
 		Canvas canvas = CanvasContainer.canvas;
 		DrawingSurface surface = canvas.surface;
@@ -60,6 +64,9 @@ public class Move extends Tool
 	@Override public void onMouseDragged(MouseEvent me)
 	{
 		super.onMouseDragged(me);
+		
+		if(currMouseButton != MouseButton.RIGHT && currMouseButton != MouseButton.LEFT)
+			return;
 		
 		canvasContentOffset = new Point(curr.x - start.x, curr.y - start.y);
 	}

@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
+import jpixeleditor.tools.Tool.MouseButton;
 import jpixeleditor.utils.SelectionHandler;
 
 public class FreeSelection extends SelectorTool

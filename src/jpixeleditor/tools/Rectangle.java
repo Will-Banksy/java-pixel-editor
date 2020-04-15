@@ -2,6 +2,9 @@ package jpixeleditor.tools;
 
 import java.awt.event.MouseEvent;
 
+import jpixeleditor.tools.Tool.MouseButton;
+import jpixeleditor.ui.Canvas;
+import jpixeleditor.utils.Colour;
 import jpixeleditor.utils.EditorTools;
 import jpixeleditor.utils.PaintHandler;
 import jpixeleditor.utils.PaintHandler.DrawTo;
@@ -22,7 +25,15 @@ public class Rectangle extends Tool
 	{
 		super.onMousePressed(me);
 		
+		if(currMouseButton != MouseButton.RIGHT && currMouseButton != MouseButton.LEFT)
+			return;
+		
 		int col = getColour();
+		
+		if(Colour.getAlpha(col) == 0)
+		{
+			col = Canvas.SELECTION_COLOUR;
+		}
 		
 		PaintHandler.paint(curr.x, curr.y, col, DrawTo.OVERLAY, EditorTools.brushSize, false);
 	}
@@ -31,7 +42,15 @@ public class Rectangle extends Tool
 	{
 		super.onMouseDragged(me);
 		
+		if(currMouseButton != MouseButton.RIGHT && currMouseButton != MouseButton.LEFT)
+			return;
+		
 		int col = getColour();
+		
+		if(Colour.getAlpha(col) == 0)
+		{
+			col = Canvas.SELECTION_COLOUR;
+		}
 		
 		PaintHandler.drawRectangle(start, curr, col, DrawTo.OVERLAY, EditorTools.brushSize, settings);
 	}
@@ -39,6 +58,9 @@ public class Rectangle extends Tool
 	@Override public void onMouseReleased(MouseEvent me)
 	{
 		super.onMouseReleased(me);
+		
+		if(currMouseButton != MouseButton.RIGHT && currMouseButton != MouseButton.LEFT)
+			return;
 		
 		int col = getColour();
 		

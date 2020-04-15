@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
+import jpixeleditor.tools.Tool.MouseButton;
 import jpixeleditor.utils.EditorTools;
 import jpixeleditor.utils.PaintHandler;
 import jpixeleditor.utils.MyMap.MyMapEntry;
@@ -27,6 +28,9 @@ public class Pencil extends Tool
 	{
 		super.onMousePressed(me);
 		
+		if(currMouseButton != MouseButton.RIGHT && currMouseButton != MouseButton.LEFT)
+			return;
+		
 		currentStroke = new ArrayList<MyMapEntry<Point, Integer>>();
 		
 		int col = getColour();
@@ -37,6 +41,9 @@ public class Pencil extends Tool
 	@Override public void onMouseDragged(MouseEvent me)
 	{
 		super.onMouseDragged(me);
+		
+		if(currMouseButton != MouseButton.RIGHT && currMouseButton != MouseButton.LEFT)
+			return;
 		
 		int col = getColour();
 		
@@ -53,6 +60,9 @@ public class Pencil extends Tool
 	@Override public void onMouseReleased(MouseEvent me)
 	{
 		super.onMouseReleased(me);
+		
+		if(currMouseButton != MouseButton.RIGHT && currMouseButton != MouseButton.LEFT)
+			return;
 		
 		int col = getColour();
 		
