@@ -6,7 +6,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
-import jpixeleditor.tools.EditorTools;
+import jpixeleditor.tools.SelectorTool;
+import jpixeleditor.utils.EditorTools;
 
 @SuppressWarnings("serial")
 public class Toolbar extends Panel
@@ -41,7 +42,7 @@ public class Toolbar extends Panel
 		for(int i = 0; i < toolBtns.length; i++)
 		{
 			// Assign tools to ToolButtons
-			toolBtns[i] = new ToolButton(EditorTools.getByID(i));
+			toolBtns[i] = new ToolButton(EditorTools.tools[i]);
 			
 			final int index = i;
 			Action action = new AbstractAction() {
@@ -60,11 +61,8 @@ public class Toolbar extends Panel
 					EditorTools.switchTool(toolBtns[index].tool.id);
 					
 					// When a toolbutton is clicked, I'd just like the selection and any grabbed pixels to be dismissed
-					CanvasContainer.canvas.surface.clearSelection();
-					if(CanvasContainer.canvas.isMovingSelectionContent)
-					{
-						CanvasContainer.canvas.grabbedPixelsMap.clear();
-					}
+					SelectorTool.selection.clear();
+					SelectorTool.grabbedPixelsMap.clear();
 					CanvasContainer.canvas.repaint();
 				}
 			};

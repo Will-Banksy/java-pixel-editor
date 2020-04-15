@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.border.EmptyBorder;
 
-import jpixeleditor.main.Main;
+import jpixeleditor.Main;
 
 @SuppressWarnings("serial")
 public class CheckBox extends JCheckBox

@@ -1,4 +1,4 @@
-package jpixeleditor.tools;
+package jpixeleditor.utils;
 
 import java.awt.Color;
 import java.util.Random;

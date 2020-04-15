@@ -1,21 +1,26 @@
-package jpixeleditor.main;
+package jpixeleditor;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.KeyEvent;
+
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import jpixeleditor.tools.Colour;
 import jpixeleditor.ui.CanvasContainer;
 import jpixeleditor.ui.MenuBar;
 import jpixeleditor.ui.NavigatorPanel;
 import jpixeleditor.ui.Panel;
 import jpixeleditor.ui.ToolConfigPanel;
 import jpixeleditor.ui.Toolbar;
+import jpixeleditor.utils.Colour;
 
 public class Main
 {
@@ -128,6 +133,22 @@ public class Main
 		uiContainer.add(menubarPanel, c);
 		
 		contentPane.add(uiContainer, BorderLayout.CENTER);
+		
+		// The jmenubar is not picked up by my Application Menu widget
+//		JMenuBar menubar = new JMenuBar();
+//		
+//		JMenu menu = new JMenu("A Menu");
+//		
+//		menu.getAccessibleContext().setAccessibleDescription(
+//		        "The only menu in this program that has menu items");
+//		menubar.add(menu);
+//
+//		JMenuItem menuItem = new JMenuItem("A text-only menu item");
+//		menuItem.getAccessibleContext().setAccessibleDescription(
+//				"This doesn't really do anything");
+//		menu.add(menuItem);
+//
+//		windowFrame.setJMenuBar(menubar);
 		
 		windowFrame.validate();
 		windowFrame.setVisible(true);

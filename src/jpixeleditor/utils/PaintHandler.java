@@ -1,13 +1,13 @@
-package jpixeleditor.tools;
+package jpixeleditor.utils;
 
 import java.awt.Point;
 import java.util.ArrayList;
 
-import jpixeleditor.tools.MyMap.MyMapEntry;
 import jpixeleditor.ui.Canvas;
 import jpixeleditor.ui.CanvasContainer;
 import jpixeleditor.ui.Canvas.DrawingSurface;
 import jpixeleditor.ui.ToolConfigPanel.ToolSettings;
+import jpixeleditor.utils.MyMap.MyMapEntry;
 
 public class PaintHandler
 {
@@ -252,8 +252,7 @@ public class PaintHandler
 							surface.gridOverlay[i][j] = colour;
 							break;
 							
-						case SELECTION:
-							surface.gridSelection.put(new Point(i, j), Boolean.valueOf(true));
+						default:
 							break;
 					}
 				}
@@ -297,8 +296,7 @@ public class PaintHandler
 											surface.gridOverlay[x][y] = colour;
 											break;
 											
-										case SELECTION:
-											surface.gridSelection.put(new Point(i, j), Boolean.valueOf(true));
+										default:
 											break;
 									}
 								}
@@ -529,16 +527,15 @@ public class PaintHandler
 					surface.gridOverlay[i][j] = colour;
 					break;
 					
-				case SELECTION:
-					surface.gridSelection.put(new Point(i, j), Boolean.valueOf(true));
+				default:
 					break;
 			}
 		}
 	}
 	
-	public static void drawLine_PixelPerfect(Point start, Point end, int colour, DrawTo location, int brushSize, ToolSettings settings)
+	public static void drawLine_PixelPerfect(Point start, Point end, int colour, DrawTo location, int brushSize, ToolSettings settings, ArrayList<MyMapEntry<Point, Integer>> currStroke)
 	{
-		ArrayList<MyMapEntry<Point, Integer>> stroke = CanvasContainer.canvas.currentStroke;
+		ArrayList<MyMapEntry<Point, Integer>> stroke = currStroke;
 		DrawingSurface surface = CanvasContainer.canvas.surface;
 		
 		if(brushSize != 1 || stroke == null)

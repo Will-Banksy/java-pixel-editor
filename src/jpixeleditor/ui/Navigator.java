@@ -14,10 +14,10 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import jpixeleditor.main.Main;
-import jpixeleditor.main.Main.Theme;
-import jpixeleditor.tools.Colour;
-import jpixeleditor.tools.Helper;
+import jpixeleditor.Main;
+import jpixeleditor.Main.Theme;
+import jpixeleditor.utils.Colour;
+import jpixeleditor.utils.Helper;
 
 @SuppressWarnings("serial")
 public class Navigator extends Panel

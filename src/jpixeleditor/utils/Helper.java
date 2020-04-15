@@ -1,4 +1,4 @@
-package jpixeleditor.tools;
+package jpixeleditor.utils;
 
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -11,6 +11,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 
 import jpixeleditor.ui.Panel;
+import jpixeleditor.utils.MyMap.MyMapEntry;
 
 public class Helper
 {
@@ -1019,5 +1020,16 @@ public class Helper
 			imgData[index] = Colour.composite(imgData[index], col);
 		else
 			imgData[index] = col;
+	}
+	
+	// Yeah I'm just going to use ArrayLists and Helper methods probably
+	public static <K, V> boolean hasKey(ArrayList<MyMapEntry<K, V>> map, K key)
+	{
+		for(MyMapEntry<K, V> entry : map)
+		{
+			if(key.equals(entry.getKey()))
+				return true;
+		}
+		return false;
 	}
 }

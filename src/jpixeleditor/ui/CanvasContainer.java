@@ -8,9 +8,10 @@ import java.awt.event.MouseWheelListener;
 
 import javax.swing.SwingUtilities;
 
-import jpixeleditor.tools.EditorTools;
-import jpixeleditor.tools.Helper;
+import jpixeleditor.tools.SelectorTool;
 import jpixeleditor.ui.Canvas.Zoom;
+import jpixeleditor.utils.EditorTools;
+import jpixeleditor.utils.Helper;
 
 @SuppressWarnings("serial")
 public class CanvasContainer extends Panel
@@ -29,14 +30,12 @@ public class CanvasContainer extends Panel
 		addMouseListener(new MouseAdapter() {
 			@Override public void mouseClicked(MouseEvent me)
 			{
-				if(!canvas.surface.selectionEmpty())
+				if(!SelectorTool.selection.isEmpty())
 				{
 					if(SwingUtilities.isLeftMouseButton(me))
 					{
-						canvas.finishSelection();
+						SelectorTool.finishSelection();
 					}
-					if(EditorTools.selectedTool.triggerType != EditorTools.ToolInfo.ON_PRESS)
-						canvas.prevSelectionNotEmpty = true;
 				}
 				canvas.repaint();
 			}

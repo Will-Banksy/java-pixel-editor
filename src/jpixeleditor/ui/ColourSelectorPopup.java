@@ -11,9 +11,9 @@ import javax.swing.JPopupMenu;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
 
-import jpixeleditor.main.Main;
-import jpixeleditor.tools.Colour;
-import jpixeleditor.tools.EditorTools;
+import jpixeleditor.Main;
+import jpixeleditor.utils.Colour;
+import jpixeleditor.utils.EditorTools;
 
 @SuppressWarnings("serial")
 public class ColourSelectorPopup extends JPopupMenu

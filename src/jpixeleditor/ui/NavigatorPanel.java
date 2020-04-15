@@ -5,7 +5,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
-import jpixeleditor.main.Main.Theme;
+import jpixeleditor.Main.Theme;
 
 @SuppressWarnings("serial")
 public class NavigatorPanel extends Panel

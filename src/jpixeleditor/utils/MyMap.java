@@ -1,4 +1,4 @@
-package jpixeleditor.tools;
+package jpixeleditor.utils;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
