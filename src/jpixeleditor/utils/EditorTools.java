@@ -21,11 +21,11 @@ import jpixeleditor.tools.RectangularSelection;
 import jpixeleditor.tools.Replace;
 import jpixeleditor.tools.ShapeSelection;
 import jpixeleditor.tools.Tool;
+import jpixeleditor.tools.Tool.ToolSettings;
 import jpixeleditor.ui.Canvas;
 import jpixeleditor.ui.CanvasContainer;
 import jpixeleditor.ui.ColourSelectorPanel;
 import jpixeleditor.ui.Canvas.DrawingSurface;
-import jpixeleditor.ui.ToolConfigPanel.ToolSettings;
 import jpixeleditor.utils.PaintHandler.DrawTo;
 
 public class EditorTools
@@ -57,7 +57,7 @@ public class EditorTools
 		public boolean sizeMatters; // This defines whether the mouse shows as the brush size on the grid or as a single pixel regardless of brush size
 		public boolean isSelector; // Is this tool used to select stuff? (Ex. Rectangular Selection Tool)
 		
-		public ToolSettings settings = null; // The config settings for the tool
+		public Tool.ToolSettings settings = null; // The config settings for the tool
 		
 		public ToolInfo(int id, String name, int triggerType, boolean sizeMatters, boolean isSelector)
 		{
@@ -67,10 +67,10 @@ public class EditorTools
 			this.sizeMatters = sizeMatters;
 			this.isSelector = isSelector;
 			
-			settings = new ToolSettings();
+			settings = new Tool.ToolSettings();
 		}
 		
-		public void setSettings(ToolSettings settings)
+		public void setSettings(Tool.ToolSettings settings)
 		{
 			this.settings = settings;
 		}

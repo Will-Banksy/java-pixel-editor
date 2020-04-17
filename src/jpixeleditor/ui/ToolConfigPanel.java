@@ -15,44 +15,13 @@ import javax.swing.border.EmptyBorder;
 import jpixeleditor.Main.Theme;
 import jpixeleditor.ui.NumberSpinner.IntegerChangeListener;
 import jpixeleditor.ui.NumberSpinner.NumberBounds;
+import jpixeleditor.ui.ToolTipsHandler.TooltipLocation;
 import jpixeleditor.utils.EditorTools;
 import jpixeleditor.utils.EditorTools.ToolInfo;
 
 @SuppressWarnings("serial")
 public class ToolConfigPanel extends Panel
 {
-	public static class ToolSettings
-	{
-		// For: paintbrush, eraser, line
-		public boolean circleBrush = false;
-		
-		// For: bucket, replace
-		public int tolerance = 0;
-		
-		// For: line, rectangle, ellipse
-		public boolean oneToOneRatio = false;
-		
-		// For: rectangle, ellipse
-		public boolean fill = false;
-		
-		// For: bucket
-		public boolean fill8Way = false;
-		
-		// For: paintbrush
-		public boolean pixelPerfect = false;
-		
-		// For: all selection tools
-		public boolean selectionAppend = false;
-		
-		// For dither
-		public boolean interdisperse = true;
-		
-		public ToolSettings()
-		{
-			
-		}
-	}
-	
 	public static final String TOOLCONFIG_PENCIL = "Config: Pencil";
 	public static final String TOOLCONFIG_ERASER = "Config: Eraser";
 	public static final String TOOLCONFIG_BUCKET = "Config: Bucket";
@@ -308,6 +277,8 @@ public class ToolConfigPanel extends Panel
 			}
 		});
 		
+		ToolTipsHandler.addTooltipTo(oneToOneRatio, "Hold Shift to use this temporarily", TooltipLocation.SOUTH);
+		
 		panel.setLayout(new FlowLayout());
 		
 		panel.add(new JLabel("<html><strong color='white'>" + EditorTools.TOOL_LINE.name + ": </strong></html>"));
@@ -333,6 +304,8 @@ public class ToolConfigPanel extends Panel
 				EditorTools.tools[EditorTools.ToolInfo.ID_RECTANGLE].settings.oneToOneRatio = box.isSelected();
 			}
 		});
+		
+		ToolTipsHandler.addTooltipTo(oneToOneRatio, "Hold Shift to use this temporarily", TooltipLocation.SOUTH);
 		
 		CheckBox fill = new CheckBox("Fill");
 		fill.setForeground(Color.WHITE);
@@ -370,6 +343,8 @@ public class ToolConfigPanel extends Panel
 				EditorTools.tools[EditorTools.ToolInfo.ID_ELLIPSE].settings.oneToOneRatio = box.isSelected();
 			}
 		});
+		
+		ToolTipsHandler.addTooltipTo(oneToOneRatio, "Hold Shift to use this temporarily", TooltipLocation.SOUTH);
 		
 		CheckBox fill = new CheckBox("Fill");
 		fill.setForeground(Color.WHITE);

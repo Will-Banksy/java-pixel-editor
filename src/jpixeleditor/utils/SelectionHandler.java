@@ -9,17 +9,18 @@ import java.util.LinkedHashSet;
 
 import jpixeleditor.tools.FreeSelection;
 import jpixeleditor.tools.SelectorTool;
+import jpixeleditor.tools.Tool;
+import jpixeleditor.tools.Tool.ToolSettings;
 import jpixeleditor.ui.Canvas;
 import jpixeleditor.ui.CanvasContainer;
 import jpixeleditor.ui.Canvas.DrawingSurface;
-import jpixeleditor.ui.ToolConfigPanel.ToolSettings;
 import jpixeleditor.utils.Helper.Group;
 import jpixeleditor.utils.MyMap.MyMapEntry;
 import jpixeleditor.utils.PaintHandler.Queue;
 
 public class SelectionHandler
 {
-	public static void magicSelect(int x, int y, boolean rightClick, ToolSettings settings)
+	public static void magicSelect(int x, int y, boolean rightClick, Tool.ToolSettings settings)
 	{
 		Canvas.DrawingSurface surface = CanvasContainer.canvas.surface;
 
@@ -181,7 +182,7 @@ public class SelectionHandler
 		return Helper.map(diff, 0, 510, 0, 255) <= tolerance;
 	}
 	
-	public static void colourSelect(Point point, boolean rightClick, ToolSettings settings)
+	public static void colourSelect(Point point, boolean rightClick, Tool.ToolSettings settings)
 	{
 		Canvas.DrawingSurface surface = CanvasContainer.canvas.surface;
 		
@@ -257,7 +258,7 @@ public class SelectionHandler
 		}
 	}
 
-	public static void drawSelectionRectangle(Point start, Point end, boolean rightClick, boolean preview, ToolSettings settings)
+	public static void drawSelectionRectangle(Point start, Point end, boolean rightClick, boolean preview, Tool.ToolSettings settings)
 	{
 		DrawingSurface surface = CanvasContainer.canvas.surface;
 
@@ -347,7 +348,7 @@ public class SelectionHandler
 		}
 	}
 
-	public static void drawFreeSelection(Point start, Point end, boolean rightClick, boolean preview, ToolSettings settings)
+	public static void drawFreeSelection(Point start, Point end, boolean rightClick, boolean preview, Tool.ToolSettings settings)
 	{
 		// All your standard local variables as references to global variables creation, with your classic null checks
 		DrawingSurface surface = CanvasContainer.canvas.surface;

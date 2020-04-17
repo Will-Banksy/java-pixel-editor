@@ -5,8 +5,8 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.SwingUtilities;
 
+import jpixeleditor.tools.Tool.ToolSettings;
 import jpixeleditor.ui.CanvasContainer;
-import jpixeleditor.ui.ToolConfigPanel.ToolSettings;
 import jpixeleditor.utils.Colour;
 import jpixeleditor.utils.EditorTools;
 import jpixeleditor.utils.EditorTools.ToolInfo;
@@ -31,6 +31,37 @@ public abstract class Tool
 		NONE
 	}
 	
+	public static class ToolSettings
+	{
+		// For: paintbrush, eraser, line
+		public boolean circleBrush = false;
+		
+		// For: bucket, replace
+		public int tolerance = 0;
+		
+		// For: line, rectangle, ellipse
+		public boolean oneToOneRatio = false;
+		
+		// For: rectangle, ellipse
+		public boolean fill = false;
+		
+		// For: bucket
+		public boolean fill8Way = false;
+		
+		// For: paintbrush
+		public boolean pixelPerfect = false;
+		
+		// For: all selection tools
+		public boolean selectionAppend = false;
+		
+		// For dither
+		public boolean interdisperse = true;
+
+		public ToolSettings()
+		{
+		}
+	}
+
 	/**
 	 * Stores the current mouse position as a grid coordinate
 	 */
@@ -57,7 +88,7 @@ public abstract class Tool
 	public Tool(int id)
 	{
 		this.id = id;
-		settings = new ToolSettings();
+		settings = new Tool.ToolSettings();
 	}
 	
 	/**

@@ -3,10 +3,11 @@ package jpixeleditor.utils;
 import java.awt.Point;
 import java.util.ArrayList;
 
+import jpixeleditor.tools.Tool;
+import jpixeleditor.tools.Tool.ToolSettings;
 import jpixeleditor.ui.Canvas;
 import jpixeleditor.ui.CanvasContainer;
 import jpixeleditor.ui.Canvas.DrawingSurface;
-import jpixeleditor.ui.ToolConfigPanel.ToolSettings;
 import jpixeleditor.utils.MyMap.MyMapEntry;
 
 public class PaintHandler
@@ -55,7 +56,7 @@ public class PaintHandler
 		SELECTION
 	}
 	
-	public static void drawLine(Point start, Point end, int colour, DrawTo location, int brushSize, ToolSettings settings)
+	public static void drawLine(Point start, Point end, int colour, DrawTo location, int brushSize, Tool.ToolSettings settings)
 	{
 		Point[] line = Helper.plotLine(start, end, settings.oneToOneRatio);
 		
@@ -65,7 +66,7 @@ public class PaintHandler
 		}
 	}
 	
-	public static void drawRectangle(Point start, Point end, int colour, DrawTo location, int brushSize, ToolSettings settings)
+	public static void drawRectangle(Point start, Point end, int colour, DrawTo location, int brushSize, Tool.ToolSettings settings)
 	{
 		if(settings.oneToOneRatio)
 		{
@@ -118,7 +119,9 @@ public class PaintHandler
 		}
 	}
 	
-	public static void drawEllipse(Point start, Point end, int colour, DrawTo location, int brushSize, ToolSettings settings)
+	// FIXME: ALGORITHM PROBLEM: Sometimes results with a rectangle out of the bounds. Fix!!! (Doesn't just happen with 1to1 ratio)
+	// NOTE: Only seems to happen vertically when the mouse is above the start point, and horizontally when the mouse is to the right of the start point
+	public static void drawEllipse(Point start, Point end, int colour, DrawTo location, int brushSize, Tool.ToolSettings settings)
 	{
 		if(settings.oneToOneRatio)
 		{
@@ -230,7 +233,7 @@ public class PaintHandler
 	
 	public static void drawRow(int xstart, int xend, int y, int colour, DrawTo location)
 	{
-		drawLine(new Point(xstart, y), new Point(xend, y), colour, location, 1, new ToolSettings());
+		drawLine(new Point(xstart, y), new Point(xend, y), colour, location, 1, new Tool.ToolSettings());
 	}
 	
 	public static void paint(int i, int j, int colour, DrawTo location, int brushSize, boolean circleBrush)
@@ -268,7 +271,7 @@ public class PaintHandler
 						int endX = startX + brushSize - 1;
 						int endY = startY + brushSize - 1;
 						
-						ToolSettings settings = new ToolSettings();
+						Tool.ToolSettings settings = new Tool.ToolSettings();
 						settings.fill = true;
 						
 						drawEllipse(new Point(startX, startY), new Point(endX, endY), colour, location, 1, settings);
@@ -308,7 +311,7 @@ public class PaintHandler
 		}
 	}
 	
-	public static void fill(Point point, int colour, ToolSettings settings)
+	public static void fill(Point point, int colour, Tool.ToolSettings settings)
 	{
 		// This algorithm is significantly faster than the previous one
 		
@@ -488,7 +491,7 @@ public class PaintHandler
 		}
 	}*/
 	
-	public static void replace(Point point, int colour, ToolSettings settings)
+	public static void replace(Point point, int colour, Tool.ToolSettings settings)
 	{
 		Canvas.DrawingSurface surface = CanvasContainer.canvas.surface;
 		
@@ -533,7 +536,7 @@ public class PaintHandler
 		}
 	}
 	
-	public static void drawLine_PixelPerfect(Point start, Point end, int colour, DrawTo location, int brushSize, ToolSettings settings, ArrayList<MyMapEntry<Point, Integer>> currStroke)
+	public static void drawLine_PixelPerfect(Point start, Point end, int colour, DrawTo location, int brushSize, Tool.ToolSettings settings, ArrayList<MyMapEntry<Point, Integer>> currStroke)
 	{
 		ArrayList<MyMapEntry<Point, Integer>> stroke = currStroke;
 		DrawingSurface surface = CanvasContainer.canvas.surface;
@@ -616,7 +619,7 @@ public class PaintHandler
 	}
 	
 	// If interdisperse, then it only uses the primary colour, and which mouse button you press determines where the colour ends up
-	public static void drawLine_Dither(Point start, Point end, int col1, int col2, boolean rightClick, int brushSize, ToolSettings settings)
+	public static void drawLine_Dither(Point start, Point end, int col1, int col2, boolean rightClick, int brushSize, Tool.ToolSettings settings)
 	{
 		DrawingSurface surface = CanvasContainer.canvas.surface;
 		Point[] points = Helper.plotLine(start, end, false);

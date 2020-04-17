@@ -52,7 +52,17 @@ public class Line extends Tool
 			col = Canvas.SELECTION_COLOUR;
 		}
 		
+		boolean changed1to1 = false;
+		if(me.isShiftDown() && !settings.oneToOneRatio)
+		{
+			settings.oneToOneRatio = true;
+			changed1to1 = true;
+		}
+		
 		PaintHandler.drawLine(start, curr, col, DrawTo.OVERLAY, EditorTools.brushSize, settings);
+		
+		if(changed1to1)
+			settings.oneToOneRatio = false;
 	}
 	
 	@Override public void onMouseReleased(MouseEvent me)
@@ -64,6 +74,16 @@ public class Line extends Tool
 		
 		int col = getColour();
 		
+		boolean changed1to1 = false;
+		if(me.isShiftDown() && !settings.oneToOneRatio)
+		{
+			settings.oneToOneRatio = true;
+			changed1to1 = true;
+		}
+		
 		PaintHandler.drawLine(start, curr, col, DrawTo.CANVAS, EditorTools.brushSize, settings);
+		
+		if(changed1to1)
+			settings.oneToOneRatio = false;
 	}
 }
