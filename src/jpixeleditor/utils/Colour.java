@@ -8,7 +8,7 @@ public class Colour
 	public static final int BLACK = toIntARGB(255, 0, 0, 0);
 	public static final int WHITE = toIntARGB(255, 255, 255, 255);
 	public static final int TRANSPARENT = toIntARGB(0, 0, 0, 0);
-	public static final  int RED = toIntARGB(255, 255, 0, 0);
+	public static final int RED = toIntARGB(255, 255, 0, 0);
 	public static final int GREEN = toIntARGB(255, 0, 255, 0);
 	public static final int BLUE = toIntARGB(255, 0, 0, 255);
 	public static final int CYAN = toIntARGB(255, 0, 255, 255);
@@ -83,10 +83,6 @@ public class Colour
 	 */
 	public static int toIntAHSL(int alpha, int hue, int saturation, int lightness)
     {
-        float H = (float)hue;
-        float S = (float)saturation / 100;
-        float L = (float)lightness / 100;
-        
         // Alternative method. Equally viable, just I prefer the shorter method
         /*float C = (1 - Math.abs(2 * L - 1)) * S;
         
@@ -136,6 +132,10 @@ public class Colour
         int R = (int)constrain(Math.round((R1 + m) * 255), 0, 255);
         int G = (int)constrain(Math.round((G1 + m) * 255), 0, 255);
         int B = (int)constrain(Math.round((B1 + m) * 255), 0, 255);*/
+
+        float H = (float)hue;
+        float S = (float)saturation / 100;
+        float L = (float)lightness / 100;
         
         float a = S * Math.min(L, 1 - L);
         

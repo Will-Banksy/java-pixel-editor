@@ -274,6 +274,7 @@ public class Canvas extends Panel
 //				
 //				prevSelectionNotEmpty = false;
 				EditorTools.selectedTool.onMouseClicked(me);
+				System.out.println("Click");
 			}
 
 			@Override public void mouseEntered(MouseEvent me)
@@ -404,6 +405,7 @@ public class Canvas extends Panel
 //				mls_startPoint = null;
 //				if(currentStroke != null) currentStroke.clear(); // Clear it, because that is always better than setting it to null. Setting things to null is probably very bad practice
 				EditorTools.selectedTool.onMouseReleased(me);
+				System.out.println("Release");
 				
 				drawMouse = true;
 				repaint();
