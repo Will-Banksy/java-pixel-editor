@@ -14,6 +14,7 @@ public class Dither extends Tool
 		description = "Draws the primary colour interdispersed with the secondary colour\nRight click to switch";
 		keyShortcut = "D";
 		iconPath = "/Dither.png";
+		sizeMatters = true;
 	}
 	
 	@Override public void onMousePressed(MouseEvent me)

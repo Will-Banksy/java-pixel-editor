@@ -18,6 +18,7 @@ public class Eraser extends Tool
 		description = "Erases pixels";
 		keyShortcut = "E";
 		iconPath = "/Eraser.png";
+		sizeMatters = true;
 	}
 	
 	@Override public void onMousePressed(MouseEvent me)

@@ -22,6 +22,7 @@ public class Pencil extends Tool
 		description = "Draws pixels";
 		keyShortcut = "P";
 		iconPath = "/Pencil.png";
+		sizeMatters = true;
 	}
 	
 	@Override public void onMousePressed(MouseEvent me)

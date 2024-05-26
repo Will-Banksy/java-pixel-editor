@@ -19,6 +19,7 @@ public class Ellipse extends Tool
 		description = "Draws ellipses (Ovals)";
 		keyShortcut = "C";
 		iconPath = "/Ellipse.png";
+		sizeMatters = true;
 	}
 	
 	@Override public void onMousePressed(MouseEvent me)

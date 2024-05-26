@@ -19,6 +19,7 @@ public class Rectangle extends Tool
 		description = "Draws rectangles";
 		keyShortcut = "R";
 		iconPath = "/Rectangle.png";
+		sizeMatters = true;
 	}
 	
 	@Override public void onMousePressed(MouseEvent me)

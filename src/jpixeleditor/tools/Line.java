@@ -19,6 +19,7 @@ public class Line extends Tool
 		description = "Draws lines";
 		keyShortcut = "L";
 		iconPath = "/Line.png";
+		sizeMatters = true;
 	}
 	
 	@Override public void onMousePressed(MouseEvent me)
